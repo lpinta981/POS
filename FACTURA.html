@@ -164,7 +164,7 @@
     <div id="thermal-invoice">
         <div class="header">
             <div class="logo-container">
-                <img id="company-logo" alt="Logo" style="max-width:50mm; max-height:15mm;" />
+                <img id="company-logo" alt="Logo" style="max-width:70mm; max-height:25mm;" />
             </div>
             
             <div class="company-info">
@@ -356,7 +356,7 @@
         }
 
         // Generar el código de barras
-        const barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${invoiceNumber}&code=Code128&imagetype=Png`;
+        const barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${authNumber}&code=Code128&imagetype=Png`;
         document.getElementById('barcode-img').src = barcodeUrl;
     </script>
 </body>
