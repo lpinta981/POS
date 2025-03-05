@@ -217,6 +217,10 @@
                 <span class="detail-label">TELÉFONO:</span>
                 <span class="detail-value" id="customer-phone"></span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label">EMAIL:</span>
+                <span class="detail-value" id="customer-email"></span>
+            </div>
         </div>
 
         <table class="table">
@@ -292,6 +296,7 @@
         const customerId = params.get('customer_id') || '9999999999999';
         const customerAddress = params.get('customer_address') || '---';
         const customerPhone = params.get('customer_phone') || '---';
+        const customerEmail = params.get('customer_email') || '---';
 
         // Información del vendedor
         const attendantName = params.get('attendant') || '---';
@@ -325,6 +330,7 @@
         document.getElementById('customer-id').textContent = customerId;
         document.getElementById('customer-address').textContent = customerAddress;
         document.getElementById('customer-phone').textContent = customerPhone;
+        document.getElementById('customer-email').textContent = customerEmail;
 
         document.getElementById('subtotal-value').textContent = '$ ' + subtotal;
         document.getElementById('discount-value').textContent = '$ ' + discount;
