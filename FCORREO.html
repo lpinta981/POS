@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario para correo electrónico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 80mm;
+      margin: 0;
+      padding: 8px;
+      color: black;
+      background-color: white;
+    }
+    .header {
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      border-radius: 10px 10px 0 0;
+      margin-bottom: 0;
+    }
+    .container {
+      border: 2px solid black;
+      border-radius: 0 0 10px 10px;
+      padding: 10px;
+      margin-top: 0;
+      background-color: white;
+    }
+    h1 {
+      font-size: 14px;
+      text-align: center;
+      margin: 8px 0;
+      text-transform: uppercase;
+    }
+    .line {
+      border-bottom: 1px solid black;
+      margin: 10px 0;
+      height: 20px;
+    }
+    .info {
+      font-size: 10px;
+      text-align: center;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    .email-icon {
+      text-align: center;
+      font-size: 18px;
+      margin: 5px 0;
+    }
+    .round-box {
+      background-color: black;
+      color: white;
+      border-radius: 15px;
+      padding: 8px;
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .footer {
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 5px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body onload="window.print()">
+  <div class="header">
+    <strong>FACTURACIÓN ELECTRÓNICA</strong>
+  </div>
+  <div class="container">
+    <div class="round-box">
+      ANOTA AQUÍ TU CORREO
+    </div>
+    <div class="email-icon">✉</div>
+    <div class="line"></div>
+    <p class="info">PARA EL ENVIÓ DE SU COMPROBANTE FISCAL</p>
+  </div>
+  <div class="footer">
+    ¡GRACIAS POR SU PREFERENCIA!
+  </div>
+</body>
+</html>
