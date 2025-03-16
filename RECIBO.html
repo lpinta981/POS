@@ -6,29 +6,30 @@
     <meta name="viewport" content="width=80mm, initial-scale=1.0">
     <title>RECIBO</title>
     <style>
-        /* Estilos generales - Diseño limpio y moderno */
+        /* Estilos generales - Diseño limpio y moderno con interlineado reducido */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            font-size: 3mm;
+            font-size: 2.8mm; /* Reducido tamaño de fuente general */
             text-align: center;
             background-color: white;
             color: black;
+            line-height: 1.1; /* Reducir interlineado general */
         }
 
         #thermal-pos {
             margin: 0 auto;
             max-width: 80mm;
-            padding: 3mm;
+            padding: 2mm; /* Reducido */
         }
 
         /* Contenedor principal con borde sólido */
         .receipt-container {
             border: 1px solid black;
             border-radius: 5px;
-            padding: 5mm;
-            margin-bottom: 3mm;
+            padding: 3mm; /* Reducido */
+            margin-bottom: 2mm; /* Reducido */
         }
 
         /* Estilos para el encabezado con logo e información */
@@ -36,7 +37,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4mm;
+            margin-bottom: 2mm; /* Reducido */
         }
 
         .logo {
@@ -54,41 +55,41 @@
         }
 
         .store-name {
-            font-size: 4mm;
+            font-size: 3.5mm; /* Reducido */
             font-weight: bold;
-            margin-bottom: 1mm;
+            margin-bottom: 0.5mm; /* Reducido */
         }
 
         .store-details {
-            font-size: 3mm;
-            line-height: 1.3;
+            font-size: 2.5mm; /* Reducido */
+            line-height: 1.1; /* Reducido */
         }
 
         /* Estilo para cápsulas de sección */
         .section-capsule {
             background-color: black;
             color: white;
-            padding: 1.5mm 3mm;
-            border-radius: 3mm;
+            padding: 1mm 2mm; /* Reducido */
+            border-radius: 2mm; /* Reducido */
             display: inline-block;
-            margin: 3mm 0 2mm 0;
+            margin: 2mm 0 1mm 0; /* Reducido */
             font-weight: bold;
-            font-size: 3mm;
+            font-size: 2.8mm; /* Reducido */
             text-align: center;
         }
 
         /* Información de secciones en formato limpio */
         .info-section {
-            padding-top: 2mm;
-            padding-bottom: 2mm;
-            margin-bottom: 3mm;
+            padding-top: 1mm; /* Reducido */
+            padding-bottom: 1mm; /* Reducido */
+            margin-bottom: 2mm; /* Reducido */
             border-bottom: 1px solid black;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 2.5mm;
+            margin-bottom: 1.5mm; /* Reducido */
             text-align: left;
         }
 
@@ -106,19 +107,21 @@
         .products-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 3mm;
+            margin-bottom: 2mm; /* Reducido */
         }
 
         .table-header th {
             border-bottom: 1px solid black;
-            padding: 2mm 0;
+            padding: 1mm 0; /* Reducido */
             font-weight: bold;
             text-align: center;
+            font-size: 2.5mm; /* Reducido */
         }
 
         .table-item td {
-            padding: 1.5mm 0;
+            padding: 1mm 0; /* Reducido */
             border-bottom: 1px solid #000000;
+            font-size: 2.8mm; /* Reducido */
         }
 
         .table-item td:last-child {
@@ -128,28 +131,40 @@
 
         /* Estilos para la sección de totales */
         .totals-section {
-            margin-top: 2mm;
-            margin-bottom: 3mm;
+            margin-top: 1mm; /* Reducido */
+            margin-bottom: 2mm; /* Reducido */
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 2mm;
+            margin-bottom: 1mm; /* Reducido */
         }
 
         .grand-total {
-            font-size: 4mm;
+            font-size: 3.5mm; /* Reducido */
             font-weight: bold;
-            padding-top: 2mm;
-            margin-top: 2mm;
+            padding-top: 1mm; /* Reducido */
+            margin-top: 1mm; /* Reducido */
             border-top: 1px solid black;
         }
 
         /* Estilo para el código de barras */
         .barcode-container {
-            margin: 4mm 0;
+            margin: 2mm 0; /* Reducido */
             text-align: center;
+            height: 10mm; /* Altura fija de 1cm */
+            overflow: hidden; /* Ocultar exceso */
+            position: relative; /* Para posicionamiento */
+        }
+        
+        .barcode-container img {
+            width: 90%;
+            position: absolute;
+            bottom: 0; /* Fijar en la parte inferior */
+            left: 5%; /* Centrar */
+            height: auto; /* Mantener proporción */
+            max-height: none; /* Quitar límite de altura */
         }
         
         /* Adicionales para la tabla de productos */
@@ -160,21 +175,21 @@
 
         /* Pie del recibo con borde de ticket */
         .receipt-footer {
-            margin-top: 5mm;
+            margin-top: 3mm; /* Reducido */
             position: relative;
         }
 
         .footer-content {
-            padding: 3mm;
+            padding: 2mm; /* Reducido */
             text-align: center;
         }
 
         /* Diseño de borde de ticket en la parte superior del footer */
         .ticket-edge {
-            height: 3mm;
+            height: 2mm; /* Reducido */
             width: 100%;
             position: absolute;
-            top: -2mm;
+            top: -1.5mm; /* Reducido */
             left: 0;
             background-image: repeating-linear-gradient(
                 90deg,
@@ -305,7 +320,7 @@
                     <tr class="table-header">
                         <th>CANT</th>
                         <th>DESC</th>
-                        <th>PRECIO <br>UNIT</th>
+                        <th>PRECIO <br>UNIT</th>
                         <th>PRECIO<br>TOTAL</th>
                     </tr>
                 </thead>
@@ -347,7 +362,7 @@
 
             <!-- Código de barras -->
             <div class="barcode-container">
-                <img id="barcode" alt="Código de Barras" style="width: 90%">
+                <img id="barcode" alt="Código de Barras">
             </div>
         
 
