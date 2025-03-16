@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=80mm, initial-scale=1.0">
+    <title>RECIBO</title>
+    <style>
+        /* Estilos generales - Diseño limpio y moderno */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 3mm;
+            text-align: center;
+            background-color: white;
+            color: black;
+        }
+
+        #thermal-pos {
+            margin: 0 auto;
+            max-width: 80mm;
+            padding: 3mm;
+        }
+
+        /* Contenedor principal con borde sólido */
+        .receipt-container {
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5mm;
+            margin-bottom: 3mm;
+        }
+
+        /* Estilos para el encabezado con logo e información */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4mm;
+        }
+
+        .logo {
+            width: 25%;
+        }
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .store-info {
+            width: 75%;
+            text-align: right;
+        }
+
+        .store-name {
+            font-size: 4mm;
+            font-weight: bold;
+            margin-bottom: 1mm;
+        }
+
+        .store-details {
+            font-size: 3mm;
+            line-height: 1.3;
+        }
+
+        /* Estilo para cápsulas de sección */
+        .section-capsule {
+            background-color: black;
+            color: white;
+            padding: 1.5mm 3mm;
+            border-radius: 3mm;
+            display: inline-block;
+            margin: 3mm 0 2mm 0;
+            font-weight: bold;
+            font-size: 3mm;
+            text-align: center;
+        }
+
+        /* Información de secciones en formato limpio */
+        .info-section {
+            padding-top: 2mm;
+            padding-bottom: 2mm;
+            margin-bottom: 3mm;
+            border-bottom: 1px solid black;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2.5mm;
+            text-align: left;
+        }
+
+        .info-label {
+            font-weight: normal;
+            color: black;
+        }
+
+        .info-value {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* Estilos para la tabla de productos */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 3mm;
+        }
+
+        .table-header th {
+            border-bottom: 1px solid black;
+            padding: 2mm 0;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .table-item td {
+            padding: 1.5mm 0;
+            border-bottom: 1px solid #000000;
+        }
+
+        .table-item td:last-child {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Estilos para la sección de totales */
+        .totals-section {
+            margin-top: 2mm;
+            margin-bottom: 3mm;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2mm;
+        }
+
+        .grand-total {
+            font-size: 4mm;
+            font-weight: bold;
+            padding-top: 2mm;
+            margin-top: 2mm;
+            border-top: 1px solid black;
+        }
+
+        /* Estilo para el código de barras */
+        .barcode-container {
+            margin: 4mm 0;
+            text-align: center;
+        }
+        
+        /* Adicionales para la tabla de productos */
+        .table-header th:last-child {
+            text-align: right;
+        }
+
+        /* Pie del recibo con borde de ticket */
+        .receipt-footer {
+            margin-top: 5mm;
+            position: relative;
+        }
+
+        .footer-content {
+            padding: 3mm;
+            text-align: center;
+        }
+
+        /* Diseño de borde de ticket en la parte superior del footer */
+        .ticket-edge {
+            height: 3mm;
+            width: 100%;
+            position: absolute;
+            top: -2mm;
+            left: 0;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2mm,
+                white 2mm,
+                white 4mm
+            );
+            background-size: 4mm 100%;
+        }
+    </style>
+</head>
+<body onload="window.print()" onfocus="window.close()">
+    <script>
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+
+        // Obtener los valores de los parámetros
+        var venta = params.has('venta') ? params.get('venta') : "---";
+        var nombre_cliente = params.has('nombre_cliente') ? params.get('nombre_cliente') : "---";
+        var cedula_cliente = params.has('cedula_cliente') ? params.get('cedula_cliente') : "---";
+        var direccion_cliente = params.has('direccion_cliente') ? params.get('direccion_cliente') : "---";
+        var telefono_cliente = params.has('telefono_cliente') ? params.get('telefono_cliente') : "---";
+        var vendedor = params.has('vendedor') ? params.get('vendedor') : "---";
+        var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
+        var total = params.has('total') ? params.get('total') : "0.00";
+        var subtotal = params.has('subtotal') ? params.get('subtotal') : "0.00";
+        var descuento = params.has('descuento') ? params.get('descuento') : "0.00";
+
+        //Recibe los datos de los servicios (separados por comas)
+        var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
+        var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
+        var p_units = params.has('p_units') ? params.get('p_units') : "0.00";
+        var p_total = params.has('p_total') ? params.get('p_total') : "0.00";
+        
+        //Formato de 2 decimales
+        total = parseFloat(total).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+        subtotal = parseFloat(subtotal).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+        descuento = parseFloat(descuento).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+        
+        //crea una lista de cada columna a partir de las comas.
+        cantidades = cantidades.split(",");
+        descripciones = descripciones.split(","); 
+        p_units = p_units.split(",");
+        p_total = p_total.split(",");
+
+        //Crea una lista para mostrar en cada fila de la tabla
+        var result = [];
+
+        cantidades.forEach(function(value, id) {
+            result[id] = {
+                cantidad: cantidades[id],
+                descripcion: descripciones[id],
+                precio_units: parseFloat(p_units[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
+                precio_totals: parseFloat(p_total[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
+            };
+        });
+    </script>
+
+    <div id="thermal-pos">
+        <!-- Parte principal del recibo -->
+        <div class="receipt-container">
+            <!-- Encabezado con logo e información de la tienda -->
+            <div class="header">
+                <div class="logo">
+                    <img src="https://i.ibb.co/k2YLZwWc/LOGO-MANA-SAKILLA-2.jpg" alt="Logo Ferretería" />
+                </div>
+                <div class="store-info">
+                    <div class="store-name">FERRETERÍA MANA SAKILLA</div>
+                    <div class="store-details">
+                        RUC: 1727849695001<br>
+                        DIR: LUIS CORDERO Y JOSÉ MEJÍA<br>
+                        CEL: 0962248046
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 1: Detalles del Recibo -->
+            <div style="text-align: left;">
+                <div class="section-capsule">DETALLES DEL RECIBO</div>
+            </div>
+            <div class="info-section">
+                <div class="info-row">
+                    <span class="info-label">Nº Recibo</span>
+                    <span class="info-value" id="venta_id"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha y Hora</span>
+                    <span class="info-value" id="fechaR"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Atendido por</span>
+                    <span class="info-value" id="vendedor_id"></span>
+                </div>
+            </div>
+
+            <!-- Sección 2: Detalles del Cliente -->
+            <div style="text-align: left;">
+                <div class="section-capsule">DETALLES DEL CLIENTE</div>
+            </div>
+            <div class="info-section">
+                <div class="info-row">
+                    <span class="info-label">Cliente</span>
+                    <span class="info-value" id="nombre_id"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Cédula/RUC</span>
+                    <span class="info-value" id="cedula_id"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Dirección</span>
+                    <span class="info-value" id="direccion_id"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Teléfono</span>
+                    <span class="info-value" id="telefono_id"></span>
+                </div>
+            </div>
+
+            <!-- Sección 3: Detalles de la Compra -->
+            <div style="text-align: left;">
+                <div class="section-capsule">DETALLES DE LA COMPRA</div>
+            </div>
+            
+            <!-- Tabla de productos -->
+            <table class="products-table">
+                <thead>
+                    <tr class="table-header">
+                        <th>CANT</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>PRECIO</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBody">
+                    <script>
+                        var tablaBody = document.getElementById("tablaBody");
+
+                        result.forEach(function(row) {
+                            var newRow = document.createElement("tr");
+                            newRow.className = "table-item";
+
+                            newRow.innerHTML = `
+                                <td>${row.cantidad}</td>
+                                <td>${row.descripcion}</td>
+                                <td>$ ${row.precio_totals}</td>
+                            `;
+                            tablaBody.appendChild(newRow);
+                        });
+                    </script>
+                </tbody>
+            </table>
+
+            <!-- Sección de totales -->
+            <div class="totals-section">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span>$ <span id="subtotal_id"></span></span>
+                </div>
+                <div class="total-row">
+                    <span>Descuento</span>
+                    <span>$ <span id="descuento_id"></span></span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>TOTAL</span>
+                    <span>$ <span id="total_id"></span></span>
+                </div>
+            </div>
+
+            <!-- Código de barras -->
+            <div class="barcode-container">
+                <img id="barcode" alt="Código de Barras" style="width: 90%">
+            </div>
+        
+
+        <!-- Pie de página con diseño de ticket -->
+        <div class="receipt-footer">
+            <div class="ticket-edge"></div>
+            <div class="footer-content">
+                <strong>FERRETERÍA MANA SAKILLA</strong><br>
+                <strong>¡GRACIAS POR SU COMPRA!</strong>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        // Insertar los datos en el HTML
+        document.getElementById("venta_id").textContent = venta;
+        document.getElementById("nombre_id").textContent = nombre_cliente;
+        document.getElementById("cedula_id").textContent = cedula_cliente;
+        document.getElementById("direccion_id").textContent = direccion_cliente;
+        document.getElementById("telefono_id").textContent = telefono_cliente;
+        document.getElementById("subtotal_id").textContent = subtotal;
+        document.getElementById("descuento_id").textContent = descuento;
+        document.getElementById("vendedor_id").textContent = vendedor;
+        document.getElementById("total_id").textContent = total;
+        document.getElementById("fechaR").textContent = fecha;
+
+        // Generar el enlace del código de barras
+        var barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${venta}&code=Code128&imagetype=Png`;
+        document.getElementById("barcode").src = barcodeUrl;
+    </script>
+</body>
+</html>
