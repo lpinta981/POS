@@ -159,14 +159,27 @@
             word-break: break-all;
         }
         .footer2 {
-      background-color: black;
-      color: white;
-      text-align: center;
-      padding: 5px;
-      border-radius: 10px;
-      margin-top: 10px;
-      font-size: 10px;
-    }
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 10px;
+        }
+        
+        /* Nuevos estilos */
+        .owner-name {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+        
+        .customer-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
     </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
@@ -186,6 +199,9 @@
         </div>
 
         <div class="invoice-box">
+            <!-- Nueva línea con el nombre de la propietaria -->
+            <p class="owner-name">JESSICA NATALIA NISHVE CORO</p>
+            
             <div class="detail-row">
                 <span class="detail-label">FACTURA N°:</span>
                 <span class="detail-value" id="invoice-number"></span>
@@ -209,7 +225,9 @@
         </div>
 
         <div class="customer-details">
-            <p class="bold no-margin">DATOS DEL CLIENTE:</p>
+            <!-- Modificado para centrar el texto -->
+            <p class="customer-title">DATOS DEL CLIENTE</p>
+            
             <div class="detail-row">
                 <span class="detail-label">RAZÓN SOCIAL:</span>
                 <span class="detail-value" id="customer-name"></span>
@@ -235,9 +253,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="left-align">CANT </th>
-                    <th class="left-align">DESCRIPCIÓN </th>
-                    <th class="right-align">P.UNIT </th>
+                    <th class="left-align">CANT </th>
+                    <th class="left-align">DESCRIPCIÓN </th>
+                    <th class="right-align">P.UNIT </th>
                     <th class="right-align">TOTAL</th>
                 </tr>
             </thead>
@@ -280,9 +298,9 @@
             <p class="no-margin">* Conserve su factura. Es requisito indispensable para reclamos o garantías *</p>
         </div>
     </div>
-     <div class="footer2">
-    ¡GRACIAS POR SU PREFERENCIA!
-  </div>
+    <div class="footer2">
+        ¡GRACIAS POR SU PREFERENCIA!
+    </div>
 
     <script>
         // Obtener los parámetros de la URL
