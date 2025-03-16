@@ -113,7 +113,7 @@
             border-bottom: 1px solid black;
             padding: 2mm 0;
             font-weight: bold;
-            text-align: left;
+            text-align: center;
         }
 
         .table-item td {
@@ -153,8 +153,9 @@
         }
         
         /* Adicionales para la tabla de productos */
+        .table-header th:nth-child(3),
         .table-header th:last-child {
-            text-align: right;
+            text-align: center;
         }
 
         /* Pie del recibo con borde de ticket */
@@ -239,7 +240,7 @@
             <!-- Encabezado con logo e información de la tienda -->
             <div class="header">
                 <div class="logo">
-                    <img src="https://i.ibb.co/k2YLZwWc/LOGO-MANA-SAKILLA-2.jpg" alt="Logo Ferretería" />
+                    <img src="/api/placeholder/125/75" alt="Logo Ferretería" />
                 </div>
                 <div class="store-info">
                     <div class="store-name">FERRETERÍA MANA SAKILLA</div>
@@ -303,8 +304,9 @@
                 <thead>
                     <tr class="table-header">
                         <th>CANT</th>
-                        <th>DESCRIPCIÓN</th>
-                        <th>PRECIO</th>
+                        <th>DESC</th>
+                        <th>PRECIO <br>UNIT</th>
+                        <th>PRECIO<br>TOTAL</th>
                     </tr>
                 </thead>
                 <tbody id="tablaBody">
@@ -318,7 +320,8 @@
                             newRow.innerHTML = `
                                 <td>${row.cantidad}</td>
                                 <td>${row.descripcion}</td>
-                                <td>$ ${row.precio_totals}</td>
+                                <td style="text-align: right;">$ ${row.precio_units}</td>
+                                <td style="text-align: right;">$ ${row.precio_totals}</td>
                             `;
                             tablaBody.appendChild(newRow);
                         });
@@ -346,7 +349,7 @@
             <div class="barcode-container">
                 <img id="barcode" alt="Código de Barras" style="width: 90%">
             </div>
-        
+        </div>
 
         <!-- Pie de página con diseño de ticket -->
         <div class="receipt-footer">
@@ -357,7 +360,7 @@
             </div>
         </div>
     </div>
-</div>
+
     <script>
         // Insertar los datos en el HTML
         document.getElementById("venta_id").textContent = venta;
