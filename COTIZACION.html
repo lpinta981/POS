@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización - Ferretería Mana Sakilla</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #ff2020;
+            --secondary-color: #333333;
+            --accent-color: #f8f8f8;
+            --border-color: #dddddd;
+            --text-color: #333333;
+            --light-text: #777777;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #fff;
+            color: var(--text-color);
+            font-size: 12pt;
+            line-height: 1.6;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 15mm;
+            position: relative;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Encabezado Mejorado */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            max-height: 80px;
+            max-width: 80px;
+        }
+        
+        .store-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .store-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20pt;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+        
+        .store-name-second {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20pt;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        
+        .store-details {
+            display: flex;
+            flex-direction: column;
+            font-size: 10pt;
+            color: var(--light-text);
+        }
+        
+        .store-details span {
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .store-details i {
+            color: var(--primary-color);
+            font-size: 12pt;
+        }
+        
+        .quotation-number {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(29, 53, 87, 0.2);
+            transform: none;
+        }
+        
+        .quotation-number h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22pt;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .quotation-number p {
+            font-size: 14pt;
+            font-weight: 400;
+            color: var(--accent-color);
+        }
+        
+        /* Sección de fecha */
+        .date-section {
+            margin-bottom: 20px;
+            text-align: right;
+            font-style: italic;
+            color: var(--light-text);
+            font-size: 11pt;
+            background-color: var(--accent-color);
+            padding: 8px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            float: right;
+        }
+        
+        /* Información del cliente */
+        .client-info {
+            background-color: var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .client-info h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 14pt;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .client-info h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .client-info p {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .client-info strong {
+            width: 120px;
+            display: inline-block;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        
+        /* Detalles de productos */
+        .products {
+            margin-bottom: 25px;
+        }
+        
+        .products h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 14pt;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .products h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        thead {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        td {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        th {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: var(--accent-color);
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(241, 250, 238, 0.6);
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        tfoot {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .total {
+            font-size: 16pt;
+            font-weight: 600;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Términos y condiciones */
+        .terms {
+            margin-top: 30px;
+            border-top: 2px dashed var(--border-color);
+            padding: 20px;
+            background-color: var(--accent-color);
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .terms-tag {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 10pt;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            font-family: 'Montserrat', sans-serif;
+            z-index: 10;
+        }
+        
+        .terms h4 {
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            margin-top: 5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .terms ul {
+            padding-left: 20px;
+            color: var(--text-color);
+        }
+        
+        .terms li {
+            margin-bottom: 5px;
+        }
+        
+        /* Pie de página */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--light-text);
+            font-size: 10pt;
+            position: absolute;
+            bottom: 15mm;
+            width: calc(100% - 30mm);
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+        
+        .footer strong {
+            color: var(--secondary-color);
+        }
+        
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        
+        .contact-icons span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .contact-icons i {
+            color: var(--primary-color);
+        }
+        
+        .footer-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 11pt;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer-brand span {
+            color: var(--primary-color);
+        }
+        
+        /* Animaciones para impresión */
+        @media screen {
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .container {
+                animation: fadeIn 0.5s ease-out;
+            }
+        }
+        
+        /* Configuración de impresión */
+        @media print {
+            body {
+                width: 210mm;
+                height: 297mm;
+            }
+            
+            .container {
+                padding: 10mm;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+                box-shadow: none;
+            }
+            
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            
+            .no-print, .no-print * {
+                display: none !important;
+            }
+            
+            button, input, select {
+                display: none !important;
+            }
+        }
+    </style>
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand-container">
+                <img src="https://i.ibb.co/RkRT8ZT6/LOGO-MANA-SAKILLA-4.png" alt="Logo de la empresa" class="logo">
+                <div class="store-info">
+                    <div class="store-name">FERRETERÍA</div>
+                    <div class="store-name-second">MANA SAKILLA</div>
+                    <div class="store-details">
+                        <span><i class="fas fa-id-card"></i> RUC: 1727849695001</span>
+                        <span><i class="fas fa-map-marker-alt"></i> LUIS CORDERO Y JOSÉ MEJÍA</span>
+                        <span><i class="fas fa-mobile-alt"></i> 0963160804</span>
+                    </div>
+                </div>
+            </div>
+            <div class="quotation-number">
+                <h2>COTIZACIÓN</h2>
+                <p>N° <span id="quotationNumber">COT-00123</span></p>
+            </div>
+        </div>
+        
+        <div class="date-section">
+            <i class="far fa-calendar-alt"></i> Fecha: <span id="currentDate">15 de marzo de 2025</span>
+        </div>
+        
+        <div class="client-info">
+            <h3>INFORMACIÓN DEL CLIENTE</h3>
+            <div class="client-grid">
+                <p><strong><i class="fas fa-building"></i> Razón Social:</strong> <span id="clientName">Nombre de la Empresa S.A.</span></p>
+                <p><strong><i class="fas fa-id-card"></i> RUC/Cédula:</strong> <span id="clientId">0123456789001</span></p>
+                <p><strong><i class="fas fa-phone"></i> Teléfono:</strong> <span id="clientPhone">(+593) 99 123 4567</span></p>
+                <p><strong><i class="fas fa-envelope"></i> Correo:</strong> <span id="clientEmail">cliente@empresa.com</span></p>
+            </div>
+        </div>
+        
+        <div class="products">
+            <h3>DETALLE DE PRODUCTOS</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>Cant.</th>
+                        <th class="text-right">P. Unitario</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="productList">
+                    <tr>
+                        <td>P001</td>
+                        <td>Producto de ejemplo 1</td>
+                        <td>2</td>
+                        <td class="text-right">$25.00</td>
+                        <td class="text-right">$50.00</td>
+                    </tr>
+                    <tr>
+                        <td>P002</td>
+                        <td>Producto de ejemplo 2</td>
+                        <td>1</td>
+                        <td class="text-right">$100.00</td>
+                        <td class="text-right">$100.00</td>
+                    </tr>
+                    <tr>
+                        <td>P003</td>
+                        <td>Producto de ejemplo 3</td>
+                        <td>3</td>
+                        <td class="text-right">$30.00</td>
+                        <td class="text-right">$90.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
+                        <td class="text-right total">$240.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="terms">
+            <div class="terms-tag">Importante</div>
+            <h4>Términos y Condiciones</h4>
+            <ul>
+                <li>Precios válidos por 15 días a partir de la fecha de emisión.</li>
+                <li>Forma de pago: 50% anticipo, 50% contra entrega.</li>
+                <li>Tiempo de entrega: 5 días hábiles después de confirmado el pago inicial.</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Gracias por su confianza.</p>
+            <p>Si tiene alguna pregunta sobre esta cotización, por favor, comuníquese con nosotros.</p>
+            <div class="contact-icons">
+                <span><i class="fas fa-phone"></i> (+593) 963160804</span>
+                <span><i class="fas fa-envelope"></i> contacto@luispinta.com</span>
+            </div>
+            <p class="footer-brand"><span>FERRETERÍA MANA SAKILLA</span> - LUIS CORDERO Y JOSÉ MEJÍA</p>
+        </div>
+    </div>
+
+    <script>
+        // Esta sección permite modificar dinámicamente los datos de la cotización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Impresión automática
+            window.print();
+            
+            // Función para establecer la fecha actual
+            function setCurrentDate() {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('currentDate').textContent = now.toLocaleDateString('es-ES', options);
+            }
+            
+            // Función para actualizar los datos del cliente
+            function updateClientInfo(name, id, phone, email) {
+                document.getElementById('clientName').textContent = name;
+                document.getElementById('clientId').textContent = id;
+                document.getElementById('clientPhone').textContent = phone;
+                document.getElementById('clientEmail').textContent = email;
+            }
+            
+            // Función para actualizar el número de cotización
+            function updateQuotationNumber(number) {
+                document.getElementById('quotationNumber').textContent = number;
+            }
+            
+            // Función para actualizar los productos
+            function updateProducts(productList) {
+                const tbody = document.getElementById('productList');
+                tbody.innerHTML = '';
+                
+                let subtotal = 0;
+                
+                productList.forEach(product => {
+                    const row = document.createElement('tr');
+                    
+                    const total = product.price * product.quantity;
+                    subtotal += total;
+                    
+                    row.innerHTML = `
+                        <td>${product.code}</td>
+                        <td>${product.description}</td>
+                        <td>${product.quantity}</td>
+                        <td class="text-right">$${product.price.toFixed(2)}</td>
+                        <td class="text-right">$${total.toFixed(2)}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Actualizar total
+                const tfoot = document.querySelector('tfoot');
+                const total = subtotal;
+                
+                tfoot.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
+                        <td class="text-right total">$${total.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+            
+            // Función para obtener parámetros de la URL
+            function getParameterByName(name, url = window.location.href) {
+                name = name.replace(/[\[\]]/g, '\\$&');
+                const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+            
+            // Establecer fecha actual
+            setCurrentDate();
+            
+            // Obtener datos de la URL
+            const clientName = getParameterByName('clientName');
+            const clientId = getParameterByName('clientId');
+            const clientPhone = getParameterByName('clientPhone');
+            const clientEmail = getParameterByName('clientEmail');
+            const quotationNumber = getParameterByName('quotationNumber');
+            
+            // Actualizar información si hay parámetros en la URL
+            if (clientName) {
+                updateClientInfo(
+                    clientName,
+                    clientId || '0123456789001',
+                    clientPhone || '(+593) 99 123 4567',
+                    clientEmail || 'cliente@empresa.com'
+                );
+            }
+            
+            if (quotationNumber) {
+                updateQuotationNumber(quotationNumber);
+            }
+            
+            // Ejemplo de cómo usar las funciones para actualizar con datos de URL
+            // Se podría extender para leer productos de la URL
+            // const productsParam = getParameterByName('products');
+            // if (productsParam) {
+            //     try {
+            //         const products = JSON.parse(productsParam);
+            //         updateProducts(products);
+            //     } catch (e) {
+            //         console.error('Error al parsear productos:', e);
+            //     }
+            // }
+        });
+    </script>
+</body>
+</html>
