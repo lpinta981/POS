@@ -466,32 +466,12 @@
                     </tr>
                 </thead>
                 <tbody id="productList">
-                    <tr>
-                        <td>P001</td>
-                        <td>Producto de ejemplo 1</td>
-                        <td>2</td>
-                        <td class="text-right">$25.00</td>
-                        <td class="text-right">$50.00</td>
-                    </tr>
-                    <tr>
-                        <td>P002</td>
-                        <td>Producto de ejemplo 2</td>
-                        <td>1</td>
-                        <td class="text-right">$100.00</td>
-                        <td class="text-right">$100.00</td>
-                    </tr>
-                    <tr>
-                        <td>P003</td>
-                        <td>Producto de ejemplo 3</td>
-                        <td>3</td>
-                        <td class="text-right">$30.00</td>
-                        <td class="text-right">$90.00</td>
-                    </tr>
+                    <!-- Los productos se agregarán dinámicamente -->
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
-                        <td class="text-right total">$240.00</td>
+                        <td class="text-right total">$0.00</td>
                     </tr>
                 </tfoot>
             </table>
@@ -533,15 +513,15 @@
             
             // Función para actualizar los datos del cliente
             function updateClientInfo(name, id, phone, email) {
-                document.getElementById('clientName').textContent = name;
-                document.getElementById('clientId').textContent = id;
-                document.getElementById('clientPhone').textContent = phone;
-                document.getElementById('clientEmail').textContent = email;
+                document.getElementById('clientName').textContent = name || 'Nombre de la Empresa S.A.';
+                document.getElementById('clientId').textContent = id || '0123456789001';
+                document.getElementById('clientPhone').textContent = phone || '(+593) 99 123 4567';
+                document.getElementById('clientEmail').textContent = email || 'cliente@empresa.com';
             }
             
             // Función para actualizar el número de cotización
             function updateQuotationNumber(number) {
-                document.getElementById('quotationNumber').textContent = number;
+                document.getElementById('quotationNumber').textContent = number || 'COT-00123';
             }
             
             // Función para actualizar los productos
@@ -549,20 +529,21 @@
                 const tbody = document.getElementById('productList');
                 tbody.innerHTML = '';
                 
-                let subtotal = 0;
+                let total = 0;
                 
                 productList.forEach(product => {
                     const row = document.createElement('tr');
                     
-                    const total = product.price * product.quantity;
-                    subtotal += total;
+                    // Calculamos el subtotal del producto si no viene incluido
+                    const productTotal = product.total || (product.price * product.quantity);
+                    total += productTotal;
                     
                     row.innerHTML = `
                         <td>${product.code}</td>
-                        <td>${product.description}</td>
+                        <td>${product.name || product.description}</td>
                         <td>${product.quantity}</td>
-                        <td class="text-right">$${product.price.toFixed(2)}</td>
-                        <td class="text-right">$${total.toFixed(2)}</td>
+                        <td class="text-right">$${parseFloat(product.price).toFixed(2)}</td>
+                        <td class="text-right">$${parseFloat(productTotal).toFixed(2)}</td>
                     `;
                     
                     tbody.appendChild(row);
@@ -570,12 +551,11 @@
                 
                 // Actualizar total
                 const tfoot = document.querySelector('tfoot');
-                const total = subtotal;
                 
                 tfoot.innerHTML = `
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
-                        <td class="text-right total">$${total.toFixed(2)}</td>
+                        <td class="text-right total">$${parseFloat(total).toFixed(2)}</td>
                     </tr>
                 `;
             }
@@ -600,31 +580,41 @@
             const clientEmail = getParameterByName('clientEmail');
             const quotationNumber = getParameterByName('quotationNumber');
             
-            // Actualizar información si hay parámetros en la URL
-            if (clientName) {
-                updateClientInfo(
-                    clientName,
-                    clientId || '0123456789001',
-                    clientPhone || '(+593) 99 123 4567',
-                    clientEmail || 'cliente@empresa.com'
-                );
-            }
+            // Actualizar información del cliente si hay parámetros en la URL
+            updateClientInfo(
+                clientName,
+                clientId,
+                clientPhone,
+                clientEmail
+            );
             
+            // Actualizar número de cotización si hay parámetro en la URL
             if (quotationNumber) {
                 updateQuotationNumber(quotationNumber);
             }
             
-            // Ejemplo de cómo usar las funciones para actualizar con datos de URL
-            // Se podría extender para leer productos de la URL
-            // const productsParam = getParameterByName('products');
-            // if (productsParam) {
-            //     try {
-            //         const products = JSON.parse(productsParam);
-            //         updateProducts(products);
-            //     } catch (e) {
-            //         console.error('Error al parsear productos:', e);
-            //     }
-            // }
+            // Procesar productos desde la URL
+            const productsParam = getParameterByName('products');
+            if (productsParam) {
+                try {
+                    console.log("Productos recibidos:", productsParam);
+                    const products = JSON.parse(productsParam);
+                    console.log("Productos parseados:", products);
+                    updateProducts(products);
+                } catch (e) {
+                    console.error('Error al parsear productos:', e);
+                    // Mostrar el error en la página en modo debug
+                    document.body.innerHTML += `
+                        <div style="background: #ffeeee; border: 1px solid red; padding: 15px; margin: 15px; display: none;">
+                            <h3>Error al procesar productos:</h3>
+                            <p>${e.message}</p>
+                            <p>Datos recibidos: ${productsParam}</p>
+                        </div>
+                    `;
+                }
+            } else {
+                console.warn("No se recibieron productos en los parámetros");
+            }
         });
     </script>
 </body>
