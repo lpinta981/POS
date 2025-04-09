@@ -259,7 +259,7 @@
       document.getElementById("vendedor_id").textContent = vendedor;
       document.getElementById("fechaR").textContent = fecha;
 
-      var barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${codigo_ducha}&code=Code128&imagetype=Png`;
+      var barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${venta}&code=Code128&imagetype=Png`;
       document.getElementById("barcode").src = barcodeUrl;
     </script>
   </body>
