@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=80mm, initial-scale=1.0">
+    <title>LISTA DE PRODUCTOS</title>
+    <link rel="stylesheet" media="print" href="print.css">
+    <style media="print">
+        @page {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #thermal-pos {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+    </style>
+    <style>
+        /* Estilos generales - Diseño limpio y moderno con interlineado reducido */
+        @page {
+            margin: 0;
+            padding: 0;
+            size: 80mm auto;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 2.5mm;
+            text-align: center;
+            background-color: white;
+            color: black;
+            line-height: 1.2;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #thermal-pos {
+            margin: 0 auto;
+            max-width: 80mm;
+            padding: 1mm;
+        }
+
+        /* Contenedor principal con borde sólido */
+        .receipt-container {
+            border: 1px solid black;
+            border-radius: 3px;
+            padding: 2mm;
+            margin-bottom: 1mm;
+            position: relative;
+        }
+
+        /* Estilos para el encabezado con logo e información */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2mm;
+        }
+
+        .logo {
+            width: 22%;
+        }
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        .store-info {
+            width: 78%;
+            text-align: right;
+        }
+
+        .store-name {
+            font-size: 3.5mm;
+            font-weight: bold;
+            margin-bottom: 0.3mm;
+            letter-spacing: 0.1mm;
+        }
+
+        .store-details {
+            font-size: 2.5mm;
+            line-height: 1.1;
+            font-weight: bold;
+        }
+        
+        .store-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para cápsulas de sección */
+        .section-capsule {
+            background-color: black;
+            color: white;
+            padding: 0.7mm 1.5mm;
+            border-radius: 1.5mm;
+            display: inline-block;
+            margin: 1mm 0 1.5mm 0;
+            font-weight: bold;
+            font-size: 2.5mm;
+            text-align: center;
+        }
+
+        /* Línea de doblez */
+        .fold-line {
+            border-top: 1px dashed #999;
+            margin: 8mm 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .fold-indicator {
+            position: absolute;
+            top: -2.5mm;
+            left: 5mm;
+            font-size: 2mm;
+            background: white;
+            padding: 0 1mm;
+            color: #999;
+        }
+
+        /* Mensaje informativo */
+        .info-message {
+            padding: 2mm;
+            text-align: left;
+            font-size: 2.8mm;
+            line-height: 1.4;
+            margin-bottom: 2mm;
+        }
+
+        /* Estilos para la lista de productos */
+        .productos-lista {
+            text-align: left;
+            padding: 0 2mm 2mm 2mm;
+        }
+
+        .productos-lista ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .productos-lista li {
+            padding: 2mm 0;
+            border-bottom: 1px dotted #ccc;
+            font-size: 3.2mm;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body onload=window.print() onfocus="window.close()">
+    <script>
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        
+        // Obtener la lista de productos de la URL o usar valores predeterminados
+        let productosStr = params.get('productos') || "PRODUCTO A";
+        
+        // Convertir la cadena de productos en un array
+        let productosArray = productosStr.split('|');
+        
+        // Función para generar la lista de productos cuando el DOM esté cargado
+        function generarListaProductos() {
+            const listaUl = document.getElementById('lista-productos');
+            
+            // Limpiar cualquier contenido existente
+            listaUl.innerHTML = '';
+            
+            // Agregar cada producto como un elemento de lista
+            productosArray.forEach(producto => {
+                const li = document.createElement('li');
+                li.textContent = producto.trim();
+                listaUl.appendChild(li);
+            });
+        }
+        
+        // Ejecutar cuando el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', generarListaProductos);
+    </script>
+
+    <div id="thermal-pos">
+       
+                <div class="section-capsule">LISTA DE PRODUCTOS</div>
+            </div>
+            
+            <!-- Lista de productos -->
+            <div class="productos-lista" style="min-height: 70mm;">
+                <ul id="lista-productos">
+                    <!-- Lista generada dinámicamente con JavaScript -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
