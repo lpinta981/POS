@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=80mm, initial-scale=1.0">
+    <title>GUÍA DE UBICACIÓN</title>
+    <link rel="stylesheet" media="print" href="print.css">
+    <style media="print">
+        @page {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #thermal-pos {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+    </style>
+    <style>
+        /* Estilos generales - Diseño limpio y moderno con interlineado reducido */
+        @page {
+            margin: 0;
+            padding: 0;
+            size: 80mm auto;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 2.5mm; /* Reducido aún más */
+            text-align: center;
+            background-color: white;
+            color: black;
+            line-height: 1.2; /* Ligeramente aumentado para mejor legibilidad */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #thermal-pos {
+            margin: 0 auto;
+            max-width: 80mm;
+            padding: 1mm; /* Reducido aún más */
+        }
+
+        /* Contenedor principal con borde sólido */
+        .receipt-container {
+            border: 1px solid black;
+            border-radius: 3px; /* Reducido */
+            padding: 2mm; /* Reducido aún más */
+            margin-bottom: 1mm; /* Reducido aún más */
+        }
+
+        /* Estilos para el encabezado con logo e información */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1mm; /* Reducido aún más */
+        }
+
+        .logo {
+            width: 22%; /* Reducido */
+        }
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .store-info {
+            width: 78%; /* Aumentado */
+            text-align: right;
+        }
+
+        .store-name {
+            font-size: 3.5mm; /* Aumentado un poco */
+            font-weight: bold;
+            margin-bottom: 0.3mm; /* Reducido aún más */
+            letter-spacing: 0.1mm; /* Mejora legibilidad */
+        }
+
+        .store-details {
+            font-size: 2.5mm; /* Aumentado un poco */
+            line-height: 1.1; /* Aumentado un poco */
+            font-weight: bold; /* Añadido negrita */
+        }
+        
+        /* Compresión adicional para la información RUC, DIR, CEL */
+        .store-details br {
+            display: none;
+        }
+        
+        .store-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para cápsulas de sección */
+        .section-capsule {
+            background-color: black;
+            color: white;
+            padding: 0.7mm 1.5mm; /* Reducido aún más */
+            border-radius: 1.5mm; /* Reducido aún más */
+            display: inline-block;
+            margin: 1mm 0 0.5mm 0; /* Reducido aún más */
+            font-weight: bold;
+            font-size: 2.5mm; /* Reducido aún más */
+            text-align: center;
+        }
+
+        /* Información de secciones en formato limpio */
+        .info-section {
+            padding-top: 0.5mm; /* Reducido aún más */
+            padding-bottom: 0.5mm; /* Reducido aún más */
+            margin-bottom: 1mm; /* Reducido aún más */
+            border-bottom: 1px solid black;
+        }
+
+        /* Estilos para las instrucciones */
+        .instructions {
+            text-align: left;
+            padding: 1mm;
+            margin-bottom: 0;
+        }
+
+        .instructions h2 {
+            font-size: 3mm;
+            font-weight: bold;
+            margin-bottom: 1mm;
+            text-align: center;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 5mm;
+            font-size: 2.5mm;
+        }
+
+        .instructions li {
+            margin-bottom: 1mm;
+        }
+
+        /* Estilos para la imagen del mapa */
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Pie del recibo con borde de ticket */
+        .receipt-footer {
+            margin-top: 2mm; /* Reducido aún más */
+            position: relative;
+        }
+
+        .footer-content {
+            padding: 2mm; /* Ligeramente aumentado */
+            text-align: center;
+            font-size: 2.3mm; /* Reducido */
+            line-height: 1.3;
+        }
+
+        /* Mensaje de disculpa */
+        .apology-message {
+            padding: 2mm;
+            text-align: center;
+            font-size: 3mm;
+            font-style: italic;
+            border-top: 1px dashed black;
+            line-height: 1.3;
+        }
+
+        /* Diseño de borde de ticket en la parte superior del footer */
+        .ticket-edge {
+            height: 2mm; /* Reducido */
+            width: 100%;
+            position: absolute;
+            top: -1.5mm; /* Reducido */
+            left: 0;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2mm,
+                white 2mm,
+                white 4mm
+            );
+            background-size: 4mm 100%;
+        }
+    </style>
+</head>
+<body onload=window.print() onfocus="window.close()">
+    <script>
+        // Definir los datos de las ferreterías
+        const ferreterias = {
+            "caracol": {
+                nombre: "FERRETERÍA EL CARACOL",
+                direccion: "José Mejía y Manuel German",
+                imagen: "https://lh3.googleusercontent.com/d/1czZTbeIBwSlAtKG9QLGRg7IYwg-nUUb5=w2048"
+            },
+            "disensa": {
+                nombre: "FERRETERÍA ESCOBAR (DISENSA)",
+                direccion: "José Mejía y Antonio Benitez",
+                imagen: "https://lh3.googleusercontent.com/d/1HMqgRG5WNBcXKYb3FFBGw1_rkYRJnW9A=w2048"
+            },
+            "punto": {
+                nombre: "FERRETERÍA EL PUNTO",
+                direccion: "Av Amazonas (Frente al mercado central)",
+                imagen: "https://lh3.googleusercontent.com/d/1FrkK53Y5u2ZdC4uguGb3BpWS-F0Hdu3k=w2048"
+            },
+            "amperio": {
+                nombre: "ALMACÉN ELÉCTRICO EL AMPERIO",
+                direccion: "José Mejía (Mas abajo del parque)",
+                imagen: "https://lh3.googleusercontent.com/d/1e87IRsZIXldT7y17aOCk7B8b_sgKg1Pe=w2048"
+            }
+        };
+
+        // Obtener el parámetro de la URL
+        const params = new URLSearchParams(window.location.search);
+        const ferreteriaId = params.get('ferreteria') || 'caracol'; // Por defecto, usar caracol
+
+        // Obtener los datos de la ferretería seleccionada
+        const ferreteria = ferreterias[ferreteriaId] || ferreterias.caracol;
+        
+        // Función para actualizar los elementos cuando el DOM esté cargado
+        function actualizarDatos() {
+            document.getElementById('ferreteria-nombre').textContent = ferreteria.nombre;
+            document.getElementById('ferreteria-direccion').textContent = ferreteria.direccion;
+            document.getElementById('ferreteria-mapa').src = ferreteria.imagen;
+            document.getElementById('titulo-instrucciones').textContent = 
+                `INSTRUCCIONES PARA LLEGAR A ${ferreteria.nombre}`;
+        }
+
+        // Ejecutar cuando el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', actualizarDatos);
+    </script>
+
+    <div id="thermal-pos">
+        <!-- Parte principal del recibo -->
+        <div class="receipt-container">
+            <!-- Encabezado con logo e información de la tienda -->
+            <div class="header">
+                <div class="logo">
+                    <img src="https://i.ibb.co/k2YLZwWc/LOGO-MANA-SAKILLA-2.jpg" alt="Logo Ferretería" />
+                </div>
+                <div class="store-info">
+                    <div class="store-name">FERRETERÍA MANA SAKILLA</div>
+                    <div class="store-details">
+                        <span>RUC: 1727849695001</span>
+                        <span>DIR: LUIS CORDERO Y JOSÉ MEJÍA</span>
+                        <span>CEL: 0962248046</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Título principal para la guía -->
+            <div style="text-align: left;">
+                <div class="section-capsule">GUÍA DE UBICACIÓN</div>
+            </div>
+            
+            <!-- Sección de instrucciones -->
+            <div class="instructions">
+                <h2 id="titulo-instrucciones">INSTRUCCIONES PARA LLEGAR A LA FERRETERÍA</h2>
+                <ol>
+                    <li>Ubica los puntos de referencia</li>
+                    <li>Sigue la línea remarcada</li>
+                    <li>Ubica tu destino</li>
+                </ol>
+            </div>
+
+            <!-- Imagen del mapa a pantalla completa sin márgenes -->
+            <img id="ferreteria-mapa" class="map-image" src="" alt="Mapa de ubicación" style="margin: -2mm -2mm; width: calc(100% + 4mm);" />
+
+            <!-- Detalles de la Ferretería -->
+            <div style="text-align: left;">
+                <div class="section-capsule">DETALLES DE <span id="ferreteria-nombre"></span></div>
+            </div>
+            <div class="info-section">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.8mm; text-align: left;">
+                    <span style="font-weight: normal; color: black;">Dirección</span>
+                    <span id="ferreteria-direccion" style="font-weight: bold; text-align: right;"></span>
+                </div>
+            </div>
+
+            <!-- Mensaje de disculpa -->
+            <div class="apology-message">
+                <p>Lamentamos no haber podido atender su requerimiento en esta ocasión. Estamos trabajando constantemente para mejorar nuestro inventario y servicios.</p>
+                <p>¡Gracias por su comprensión y esperamos poder servirle mejor en una próxima visita!</p>
+            </div>
+
+            <!-- Pie de página con diseño de ticket -->
+            <div class="receipt-footer">
+                <div class="ticket-edge"></div>
+                <div class="footer-content">
+                    <strong style="font-size: 2.3mm;">FERRETERÍA MANA SAKILLA</strong><br>
+                    <span style="font-size: 2.3mm;">LUIS CORDERO Y JOSÉ MEJÍA</span><br>
+                    <span style="font-size: 2.3mm;">TELÉFONO: 0962248046</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
