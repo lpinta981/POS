@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Lista de Productos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 150px;
+            border-radius: 50%;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        .input-group button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            width: 40px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .items-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .items-list ul {
+            padding-left: 20px;
+        }
+        .items-list li {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .items-list li .item-text {
+            flex: 1;
+        }
+        .items-list li .delete-btn {
+            color: #f44336;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .print-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .print-btn:hover {
+            background: #0b7dda;
+        }
+        .instructions {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.ibb.co/k2YLZwWc/LOGO-MANA-SAKILLA-2.jpg" alt="Logo Ferretería">
+        </div>
+        <h1>Generador de Lista de Productos</h1>
+        
+        <div class="input-group">
+            <input type="text" id="product-input" placeholder="Ingrese un producto y presione Enter">
+            <button id="add-btn">+</button>
+        </div>
+        
+        <div class="items-list">
+            <ul id="products-list"></ul>
+        </div>
+        
+        <button class="print-btn" id="print-btn">IMPRIMIR LISTA</button>
+        
+        <div class="instructions">
+            <p><strong>Instrucciones:</strong></p>
+            <p>1. Ingrese cada producto y presione Enter o el botón "+" para añadirlo a la lista.</p>
+            <p>2. Para eliminar un producto, haga clic en la "X" junto al producto.</p>
+            <p>3. Una vez completada la lista, presione "IMPRIMIR LISTA" para generar el documento para el cliente.</p>
+        </div>
+    </div>
+
+    <script>
+        // Referencias a elementos DOM
+        const productInput = document.getElementById('product-input');
+        const addBtn = document.getElementById('add-btn');
+        const productsList = document.getElementById('products-list');
+        const printBtn = document.getElementById('print-btn');
+        
+        // Array para almacenar los productos
+        let products = [];
+        
+        // Función para añadir un producto a la lista
+        function addProduct() {
+            const productName = productInput.value.trim();
+            
+            if (productName) {
+                // Añadir a la lista de productos
+                products.push(productName);
+                
+                // Crear elemento de lista
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="item-text">${productName}</span>
+                    <span class="delete-btn" data-index="${products.length - 1}">X</span>
+                `;
+                productsList.appendChild(li);
+                
+                // Limpiar el input
+                productInput.value = '';
+                
+                // Enfocar el input para el siguiente producto
+                productInput.focus();
+            }
+        }
+        
+        // Función para eliminar un producto
+        function deleteProduct(index) {
+            // Eliminar del array
+            products.splice(index, 1);
+            
+            // Actualizar la vista
+            updateProductsList();
+        }
+        
+        // Función para actualizar la lista visualmente
+        function updateProductsList() {
+            // Limpiar la lista actual
+            productsList.innerHTML = '';
+            
+            // Recrear los elementos basados en el array actualizado
+            products.forEach((product, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="item-text">${product}</span>
+                    <span class="delete-btn" data-index="${index}">X</span>
+                `;
+                productsList.appendChild(li);
+            });
+        }
+        
+        // Función para imprimir la lista
+        function printList() {
+            if (products.length === 0) {
+                alert('Por favor, agregue al menos un producto a la lista.');
+                return;
+            }
+            
+            // Crear una cadena con los productos separados por el delimitador |
+            const productString = products.join('|');
+            
+            // Crear la URL con los parámetros
+            const printUrl = `https://pos.manasakilla.com/listado.html?productos=${encodeURIComponent(productString)}`;
+            
+            // Abrir la página de impresión en una nueva ventana/pestaña
+            window.open(printUrl, '_blank');
+        }
+        
+        // Event Listeners
+        
+        // Botón de añadir
+        addBtn.addEventListener('click', addProduct);
+        
+        // Tecla Enter en el input
+        productInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                addProduct();
+                event.preventDefault(); // Prevenir comportamiento por defecto del Enter
+            }
+        });
+        
+        // Delegación de eventos para los botones de eliminar
+        productsList.addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-btn')) {
+                const index = parseInt(event.target.getAttribute('data-index'));
+                deleteProduct(index);
+            }
+        });
+        
+        // Botón de imprimir
+        printBtn.addEventListener('click', printList);
+        
+        // Enfocar el input al cargar la página
+        window.addEventListener('load', function() {
+            productInput.focus();
+        });
+    </script>
+</body>
+</html>
