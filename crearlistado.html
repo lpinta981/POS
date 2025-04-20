@@ -98,6 +98,67 @@
             padding: 10px;
             border-radius: 4px;
         }
+        
+        /* Estilos para el toggle switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .toggle-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
     </style>
 </head>
 <body>
@@ -116,13 +177,22 @@
             <ul id="products-list"></ul>
         </div>
         
+        <div class="toggle-container">
+            <span class="toggle-label">Incluir encabezado:</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="header-toggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
         <button class="print-btn" id="print-btn">IMPRIMIR LISTA</button>
         
         <div class="instructions">
             <p><strong>Instrucciones:</strong></p>
             <p>1. Ingrese cada producto y presione Enter o el botón "+" para añadirlo a la lista.</p>
             <p>2. Para eliminar un producto, haga clic en la "X" junto al producto.</p>
-            <p>3. Una vez completada la lista, presione "IMPRIMIR LISTA" para generar el documento para el cliente.</p>
+            <p>3. Use el interruptor "Incluir encabezado" para generar la lista con o sin el encabezado de Ferretería Mana Sakilla.</p>
+            <p>4. Una vez completada la lista, presione "IMPRIMIR LISTA" para generar el documento.</p>
         </div>
     </div>
 
@@ -195,8 +265,16 @@
             // Crear una cadena con los productos separados por el delimitador |
             const productString = products.join('|');
             
+            // Verificar si el toggle de encabezado está activado
+            const includeHeader = document.getElementById('header-toggle').checked;
+            
+            // Definir la URL base según la configuración del encabezado
+            const baseUrl = includeHeader 
+                ? 'https://pos.manasakilla.com/listado.html' 
+                : 'https://pos.manasakilla.com/listadoint.html';
+            
             // Crear la URL con los parámetros
-            const printUrl = `https://pos.manasakilla.com/listado.html?productos=${encodeURIComponent(productString)}`;
+            const printUrl = `${baseUrl}?productos=${encodeURIComponent(productString)}`;
             
             // Abrir la página de impresión en una nueva ventana/pestaña
             window.open(printUrl, '_blank');
