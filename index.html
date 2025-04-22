@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de ventas</title>
     
-    <!-- Añade esta línea para el favicon -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.postimg.cc/kXdCrCc1/LOGO-MANA-SAKILLA-5.png">
     
     <style>
@@ -23,5 +23,34 @@
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec"></iframe>
+    <iframe id="main-iframe" src=""></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL base del iframe gestor
+            const baseUrl = "https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec";
+            
+            // Función para detectar si es dispositivo móvil
+            function isMobileDevice() {
+                return (window.innerWidth <= 768) || 
+                       (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+            }
+            
+            // Determinar URL final basado en el tipo de dispositivo
+            const isMobile = isMobileDevice();
+            
+            // Redirigir al iframe con o sin parámetro mobile
+            document.getElementById('main-iframe').src = baseUrl + (isMobile ? "?mobile=true" : "");
+            
+            // Redetectar en caso de cambio de tamaño de ventana (útil para tablets y dispositivos que cambian orientación)
+            window.addEventListener('resize', function() {
+                const currentIsMobile = isMobileDevice();
+                if (currentIsMobile !== isMobile) {
+                    // Solo actualizar si cambió el estado (de móvil a escritorio o viceversa)
+                    document.getElementById('main-iframe').src = baseUrl + (currentIsMobile ? "?mobile=true" : "");
+                }
+            });
+        });
+    </script>
 </body>
+</html>
