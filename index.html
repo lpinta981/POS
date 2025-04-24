@@ -24,51 +24,63 @@
 </head>
 <body>
     <iframe id="main-iframe" src=""></iframe>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // URL base del iframe gestor
             const baseUrl = "https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec";
+            // URL para dispositivos móviles
+            const mobileUrl = "https://pos.manasakilla.com/movil";
             
-
             // Función más robusta para detectar si es dispositivo móvil
-function isMobileDevice() {
-    // Verificar por User-Agent primero (más confiable)
-    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-    if (mobileRegex.test(navigator.userAgent)) {
-        console.log("Detectado móvil por User-Agent");
-        return true;
-    }
-    
-    // También verificar por dimensiones de pantalla (pantallas pequeñas)
-    const smallScreen = window.innerWidth <= 768;
-    if (smallScreen) {
-        console.log("Detectado móvil por dimensiones de pantalla");
-        return true;
-    }
-    
-    // Verificar si está en modo de simulación móvil (para depuración)
-    if (window.navigator.userAgent.indexOf("Mobile") !== -1 || 
-        window.navigator.userAgent.indexOf("Android") !== -1) {
-        console.log("Detectado móvil por simulación");
-        return true;
-    }
-    
-    return false;
-}
+            function isMobileDevice() {
+                // Verificar por User-Agent primero (más confiable)
+                const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+                if (mobileRegex.test(navigator.userAgent)) {
+                    console.log("Detectado móvil por User-Agent");
+                    return true;
+                }
+                
+                // También verificar por dimensiones de pantalla (pantallas pequeñas)
+                const smallScreen = window.innerWidth <= 768;
+                if (smallScreen) {
+                    console.log("Detectado móvil por dimensiones de pantalla");
+                    return true;
+                }
+                
+                // Verificar si está en modo de simulación móvil (para depuración)
+                if (window.navigator.userAgent.indexOf("Mobile") !== -1 || 
+                    window.navigator.userAgent.indexOf("Android") !== -1) {
+                    console.log("Detectado móvil por simulación");
+                    return true;
+                }
+                
+                return false;
+            }
             
             // Determinar URL final basado en el tipo de dispositivo
             const isMobile = isMobileDevice();
             
-            // Redirigir al iframe con o sin parámetro mobile
-            document.getElementById('main-iframe').src = baseUrl + (isMobile ? "?mobile=true" : "");
+            if (isMobile) {
+                // Redirigir a la URL móvil en lugar de usar el iframe
+                window.location.href = mobileUrl;
+            } else {
+                // Cargar el iframe solo en dispositivos de escritorio
+                document.getElementById('main-iframe').src = baseUrl;
+            }
             
             // Redetectar en caso de cambio de tamaño de ventana (útil para tablets y dispositivos que cambian orientación)
             window.addEventListener('resize', function() {
                 const currentIsMobile = isMobileDevice();
                 if (currentIsMobile !== isMobile) {
                     // Solo actualizar si cambió el estado (de móvil a escritorio o viceversa)
-                    document.getElementById('main-iframe').src = baseUrl + (currentIsMobile ? "?mobile=true" : "");
+                    if (currentIsMobile) {
+                        window.location.href = mobileUrl;
+                    } else {
+                        // Solo recargar si cambió de móvil a escritorio
+                        if (window.location.href !== document.location.href) {
+                            window.location.reload();
+                        }
+                    }
                 }
             });
         });
