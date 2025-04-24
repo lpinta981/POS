@@ -62,7 +62,7 @@
             overflow-y: auto;
             width: 100%;
             z-index: 9999;
-            display: none; /* Oculto por defecto, sólo visible para depuración */
+            display: none; /* Oculto por defecto */
         }
     </style>
 </head>
@@ -84,10 +84,12 @@
         function log(message) {
             console.log(message);
             const debugDiv = document.getElementById('debug');
-            const timestamp = new Date().toLocaleTimeString();
-            debugDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
-            // Mantener el scroll al final para ver los mensajes más recientes
-            debugDiv.scrollTop = debugDiv.scrollHeight;
+            if (debugDiv) {
+                const timestamp = new Date().toLocaleTimeString();
+                debugDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+                // Mantener el scroll al final para ver los mensajes más recientes
+                debugDiv.scrollTop = debugDiv.scrollHeight;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -178,23 +180,24 @@
             window.addEventListener('message', event => {
                 log(`Mensaje recibido: ${JSON.stringify(event.data)}`);
                 
-                // Verificar el origen para seguridad (más permisivo para permitir desarrollo)
-                try {
-                    log(`Origen del mensaje: ${event.origin}`);
-                } catch (error) {
-                    log(`Error al verificar origen: ${error.message}`);
-                }
-                
                 if (event.data && event.data.action === 'requestCameraPermission') {
                     log('Iframe solicitó permiso de cámara');
-                    // El iframe está solicitando permiso de cámara
-                    if (!cameraPermissionGranted) {
-                        log('Mostrando overlay de permiso de cámara');
-                        cameraOverlay.style.display = 'flex';
+                    
+                    // Solo procesar solicitud de cámara en dispositivos móviles
+                    if (isMobile) {
+                        // El iframe está solicitando permiso de cámara
+                        if (!cameraPermissionGranted) {
+                            log('Mostrando overlay de permiso de cámara');
+                            cameraOverlay.style.display = 'flex';
+                        } else {
+                            // Si ya tenemos permiso, notificar al iframe directamente
+                            log('Permiso ya concedido, notificando al iframe');
+                            iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
+                        }
                     } else {
-                        // Si ya tenemos permiso, notificar al iframe directamente
-                        log('Permiso ya concedido, notificando al iframe');
-                        iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
+                        log('Solicitud de cámara ignorada en dispositivo de escritorio');
+                        // En PC, simplemente enviamos un mensaje indicando que no hay cámara disponible
+                        iframe.contentWindow.postMessage({ action: 'cameraNotAvailable', reason: 'desktop' }, '*');
                     }
                 }
             });
@@ -213,15 +216,17 @@
                 }
             });
 
-            // Automáticamente mostrar la solicitud de permiso de cámara si no está en caché
-            if (!cameraPermissionGranted) {
-                log('No hay permiso de cámara en caché, mostrando overlay automáticamente');
+            // Automáticamente mostrar la solicitud de permiso de cámara si es móvil y no está en caché
+            if (isMobile && !cameraPermissionGranted) {
+                log('Dispositivo móvil sin permiso de cámara en caché, mostrando overlay automáticamente');
                 // Pequeño retraso para asegurar que la página esté completamente cargada
                 setTimeout(() => {
                     cameraOverlay.style.display = 'flex';
                 }, 1000);
+            } else if (isMobile) {
+                log('Dispositivo móvil con permiso de cámara ya concedido');
             } else {
-                log('Permiso de cámara ya concedido, no es necesario mostrarlo');
+                log('Dispositivo de escritorio detectado, no se solicitará permiso de cámara');
             }
 
             log('Inicialización completada');
