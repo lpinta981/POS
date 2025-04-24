@@ -20,17 +20,58 @@
             height: 100%;
             border: none;
         }
+        #cameraPermissionOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        #cameraPermissionOverlay h2 {
+            margin-top: 0;
+        }
+        #cameraPermissionOverlay button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <iframe id="main-iframe" src=""></iframe>
+    <!-- Overlay para solicitar permiso de cámara -->
+    <div id="cameraPermissionOverlay" style="display: none;">
+        <h2>Acceso a la cámara</h2>
+        <p>El sistema necesita acceso a tu cámara para escanear códigos de productos.</p>
+        <button id="requestCameraButton">Permitir acceso a la cámara</button>
+    </div>
+
+    <iframe id="main-iframe" src="" allow="camera"></iframe>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // URL base del iframe gestor
             const baseUrl = "https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec";
-            // URL para dispositivos móviles
-            const mobileUrl = "https://pos.manasakilla.com/movil";
+            const iframe = document.getElementById('main-iframe');
+            const cameraOverlay = document.getElementById('cameraPermissionOverlay');
+            const requestCameraButton = document.getElementById('requestCameraButton');
             
+            // Comprobar si ya tenemos permiso de cámara almacenado
+            const cameraPermissionGranted = localStorage.getItem('cameraPermissionGranted') === 'true';
+
             // Función más robusta para detectar si es dispositivo móvil
             function isMobileDevice() {
                 // Verificar por User-Agent primero (más confiable)
@@ -60,27 +101,63 @@
             // Determinar URL final basado en el tipo de dispositivo
             const isMobile = isMobileDevice();
             
-            if (isMobile) {
-                // Redirigir a la URL móvil en lugar de usar el iframe
-                window.location.href = mobileUrl;
-            } else {
-                // Cargar el iframe solo en dispositivos de escritorio
-                document.getElementById('main-iframe').src = baseUrl;
-            }
+            // Cargar el iframe con el parámetro mobile si corresponde
+            iframe.src = baseUrl + (isMobile ? "?mobile=true" : "");
+            
+            // Solicitar permiso para la cámara
+            requestCameraButton.addEventListener('click', async () => {
+                try {
+                    // Intentar acceder a la cámara directamente
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    
+                    // Si llega aquí, el permiso fue concedido
+                    console.log('Permiso de cámara concedido');
+                    
+                    // Guardar en localStorage que el permiso fue concedido
+                    localStorage.setItem('cameraPermissionGranted', 'true');
+                    
+                    // Detener la transmisión, ya que solo necesitábamos el permiso
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // Notificar al iframe que el permiso de la cámara ha sido concedido
+                    iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
+                    
+                    // Ocultar el overlay
+                    cameraOverlay.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error al solicitar permiso de cámara:', error);
+                    alert('No se pudo acceder a la cámara. Por favor, intenta nuevamente o verifica la configuración de permisos de tu navegador.');
+                }
+            });
+            
+            // Escuchar mensajes del iframe
+            window.addEventListener('message', event => {
+                // Verificar el origen para seguridad
+                const iframeOrigin = new URL(iframe.src).origin;
+                
+                if (event.origin !== iframeOrigin && event.origin !== '*') {
+                    console.log('Mensaje recibido de origen no confiable:', event.origin);
+                    return;
+                }
+                
+                if (event.data && event.data.action === 'requestCameraPermission') {
+                    // El iframe está solicitando permiso de cámara
+                    if (!cameraPermissionGranted) {
+                        cameraOverlay.style.display = 'flex';
+                    } else {
+                        // Si ya tenemos permiso, notificar al iframe directamente
+                        iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
+                    }
+                }
+            });
             
             // Redetectar en caso de cambio de tamaño de ventana (útil para tablets y dispositivos que cambian orientación)
             window.addEventListener('resize', function() {
                 const currentIsMobile = isMobileDevice();
                 if (currentIsMobile !== isMobile) {
                     // Solo actualizar si cambió el estado (de móvil a escritorio o viceversa)
-                    if (currentIsMobile) {
-                        window.location.href = mobileUrl;
-                    } else {
-                        // Solo recargar si cambió de móvil a escritorio
-                        if (window.location.href !== document.location.href) {
-                            window.location.reload();
-                        }
-                    }
+                    iframe.src = baseUrl + (currentIsMobile ? "?mobile=true" : "");
                 }
             });
         });
