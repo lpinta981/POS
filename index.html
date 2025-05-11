@@ -86,7 +86,7 @@
             const debugDiv = document.getElementById('debug');
             if (debugDiv) {
                 const timestamp = new Date().toLocaleTimeString();
-                debugDiv.innerHTML += <div>[${timestamp}] ${message}</div>;
+                debugDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
                 // Mantener el scroll al final para ver los mensajes más recientes
                 debugDiv.scrollTop = debugDiv.scrollHeight;
             }
@@ -103,7 +103,7 @@
             
             // Comprobar si ya tenemos permiso de cámara almacenado
             const cameraPermissionGranted = localStorage.getItem('cameraPermissionGranted') === 'true';
-            log(Permiso de cámara en localStorage: ${cameraPermissionGranted});
+            log(`Permiso de cámara en localStorage: ${cameraPermissionGranted}`);
 
             // Función más robusta para detectar si es dispositivo móvil
             function isMobileDevice() {
@@ -134,11 +134,11 @@
             
             // Determinar URL final basado en el tipo de dispositivo
             const isMobile = isMobileDevice();
-            log(Es dispositivo móvil: ${isMobile});
+            log(`Es dispositivo móvil: ${isMobile}`);
             
             // Cargar el iframe con el parámetro mobile si corresponde
             const finalUrl = baseUrl + (isMobile ? "?mobile=true" : "");
-            log(Cargando iframe con URL: ${finalUrl});
+            log(`Cargando iframe con URL: ${finalUrl}`);
             iframe.src = finalUrl;
             
             // Solicitar permiso para la cámara
@@ -170,7 +170,7 @@
                     
                 } catch (error) {
                     console.error('Error al solicitar permiso de cámara:', error);
-                    log(ERROR: No se pudo acceder a la cámara: ${error.message});
+                    log(`ERROR: No se pudo acceder a la cámara: ${error.message}`);
                     alert('No se pudo acceder a la cámara. Por favor, intenta nuevamente o verifica la configuración de permisos de tu navegador.');
                 }
             });
@@ -178,7 +178,7 @@
             // Escuchar mensajes del iframe
             log('Configurando listener de mensajes del iframe');
             window.addEventListener('message', event => {
-                log(Mensaje recibido: ${JSON.stringify(event.data)});
+                log(`Mensaje recibido: ${JSON.stringify(event.data)}`);
                 
                 if (event.data && event.data.action === 'requestCameraPermission') {
                     log('Iframe solicitó permiso de cámara');
@@ -206,12 +206,12 @@
             window.addEventListener('resize', function() {
                 log('Evento de redimensionamiento detectado');
                 const currentIsMobile = isMobileDevice();
-                log(Después de redimensionar - Es móvil: ${currentIsMobile}, Era móvil antes: ${isMobile});
+                log(`Después de redimensionar - Es móvil: ${currentIsMobile}, Era móvil antes: ${isMobile}`);
                 
                 if (currentIsMobile !== isMobile) {
                     // Solo actualizar si cambió el estado (de móvil a escritorio o viceversa)
                     const newUrl = baseUrl + (currentIsMobile ? "?mobile=true" : "");
-                    log(Cambiando URL del iframe a: ${newUrl});
+                    log(`Cambiando URL del iframe a: ${newUrl}`);
                     iframe.src = newUrl;
                 }
             });
