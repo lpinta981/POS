@@ -7,230 +7,55 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.postimg.cc/kXdCrCc1/LOGO-MANA-SAKILLA-5.png">
-    
+
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        #cameraPermissionOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+        body {
+            background-color: #f8f8f8;
+            font-family: Arial, sans-serif;
+            color: #333;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            color: white;
+            height: 100vh;
             text-align: center;
             padding: 20px;
         }
-        #cameraPermissionOverlay h2 {
-            margin-top: 0;
+        .container {
+            max-width: 600px;
         }
-        #cameraPermissionOverlay button {
-            margin-top: 20px;
-            padding: 12px 24px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
+        h1 {
+            color: #d90000;
+            margin-bottom: 10px;
         }
-        #debug {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            background: rgba(0,0,0,0.7);
-            color: lime;
-            font-family: monospace;
-            padding: 5px;
-            font-size: 10px;
-            max-height: 100px;
-            overflow-y: auto;
-            width: 100%;
-            z-index: 9999;
-            display: none; /* Oculto por defecto */
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .loader {
+            border: 6px solid #ccc;
+            border-top: 6px solid #d90000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Overlay para solicitar permiso de cámara -->
-    <div id="cameraPermissionOverlay" style="display: none;">
-        <h2>Acceso a la cámara</h2>
-        <p>El sistema necesita acceso a tu cámara para escanear códigos de productos.</p>
-        <button id="requestCameraButton">Permitir acceso a la cámara</button>
+    <div class="container">
+        <div class="loader"></div>
+        <h1>Redirigiendo al sistema...</h1>
+        <p>Por favor espera un momento. Si no eres redirigido automáticamente, <a href="https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec" target="_blank">haz clic aquí</a>.</p>
     </div>
 
-    <!-- Área de depuración (oculta por defecto) -->
-    <div id="debug"></div>
-
-    <iframe id="main-iframe" src="" allow="camera"></iframe>
-
     <script>
-        // Función de registro para depuración
-        function log(message) {
-            console.log(message);
-            const debugDiv = document.getElementById('debug');
-            if (debugDiv) {
-                const timestamp = new Date().toLocaleTimeString();
-                debugDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
-                // Mantener el scroll al final para ver los mensajes más recientes
-                debugDiv.scrollTop = debugDiv.scrollHeight;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            log("DOM completamente cargado");
-            
-            // URL base del iframe gestor
-            const baseUrl = "https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec";
-            const iframe = document.getElementById('main-iframe');
-            const cameraOverlay = document.getElementById('cameraPermissionOverlay');
-            const requestCameraButton = document.getElementById('requestCameraButton');
-            
-            // Comprobar si ya tenemos permiso de cámara almacenado
-            const cameraPermissionGranted = localStorage.getItem('cameraPermissionGranted') === 'true';
-            log(`Permiso de cámara en localStorage: ${cameraPermissionGranted}`);
-
-            // Función más robusta para detectar si es dispositivo móvil
-            function isMobileDevice() {
-                // Verificar por User-Agent primero (más confiable)
-                const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-                if (mobileRegex.test(navigator.userAgent)) {
-                    log("Detectado móvil por User-Agent");
-                    return true;
-                }
-                
-                // También verificar por dimensiones de pantalla (pantallas pequeñas)
-                const smallScreen = window.innerWidth <= 768;
-                if (smallScreen) {
-                    log("Detectado móvil por dimensiones de pantalla");
-                    return true;
-                }
-                
-                // Verificar si está en modo de simulación móvil (para depuración)
-                if (window.navigator.userAgent.indexOf("Mobile") !== -1 || 
-                    window.navigator.userAgent.indexOf("Android") !== -1) {
-                    log("Detectado móvil por simulación");
-                    return true;
-                }
-                
-                log("Detectado dispositivo de escritorio");
-                return false;
-            }
-            
-            // Determinar URL final basado en el tipo de dispositivo
-            const isMobile = isMobileDevice();
-            log(`Es dispositivo móvil: ${isMobile}`);
-            
-            // Cargar el iframe con el parámetro mobile si corresponde
-            const finalUrl = baseUrl + (isMobile ? "?mobile=true" : "");
-            log(`Cargando iframe con URL: ${finalUrl}`);
-            iframe.src = finalUrl;
-            
-            // Solicitar permiso para la cámara
-            requestCameraButton.addEventListener('click', async () => {
-                log("Botón de solicitud de cámara presionado");
-                try {
-                    // Intentar acceder a la cámara directamente
-                    log("Solicitando permiso de cámara al navegador...");
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    
-                    // Si llega aquí, el permiso fue concedido
-                    log('Permiso de cámara concedido por el navegador');
-                    
-                    // Guardar en localStorage que el permiso fue concedido
-                    localStorage.setItem('cameraPermissionGranted', 'true');
-                    log('Permiso guardado en localStorage');
-                    
-                    // Detener la transmisión, ya que solo necesitábamos el permiso
-                    stream.getTracks().forEach(track => track.stop());
-                    log('Stream de cámara detenido');
-                    
-                    // Notificar al iframe que el permiso de la cámara ha sido concedido
-                    log('Enviando mensaje de permiso concedido al iframe');
-                    iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
-                    
-                    // Ocultar el overlay
-                    cameraOverlay.style.display = 'none';
-                    log('Overlay de permiso oculto');
-                    
-                } catch (error) {
-                    console.error('Error al solicitar permiso de cámara:', error);
-                    log(`ERROR: No se pudo acceder a la cámara: ${error.message}`);
-                    alert('No se pudo acceder a la cámara. Por favor, intenta nuevamente o verifica la configuración de permisos de tu navegador.');
-                }
-            });
-            
-            // Escuchar mensajes del iframe
-            log('Configurando listener de mensajes del iframe');
-            window.addEventListener('message', event => {
-                log(`Mensaje recibido: ${JSON.stringify(event.data)}`);
-                
-                if (event.data && event.data.action === 'requestCameraPermission') {
-                    log('Iframe solicitó permiso de cámara');
-                    
-                    // Solo procesar solicitud de cámara en dispositivos móviles
-                    if (isMobile) {
-                        // El iframe está solicitando permiso de cámara
-                        if (!cameraPermissionGranted) {
-                            log('Mostrando overlay de permiso de cámara');
-                            cameraOverlay.style.display = 'flex';
-                        } else {
-                            // Si ya tenemos permiso, notificar al iframe directamente
-                            log('Permiso ya concedido, notificando al iframe');
-                            iframe.contentWindow.postMessage({ action: 'cameraPermissionGranted' }, '*');
-                        }
-                    } else {
-                        log('Solicitud de cámara ignorada en dispositivo de escritorio');
-                        // En PC, simplemente enviamos un mensaje indicando que no hay cámara disponible
-                        iframe.contentWindow.postMessage({ action: 'cameraNotAvailable', reason: 'desktop' }, '*');
-                    }
-                }
-            });
-            
-            // Redetectar en caso de cambio de tamaño de ventana (útil para tablets y dispositivos que cambian orientación)
-            window.addEventListener('resize', function() {
-                log('Evento de redimensionamiento detectado');
-                const currentIsMobile = isMobileDevice();
-                log(`Después de redimensionar - Es móvil: ${currentIsMobile}, Era móvil antes: ${isMobile}`);
-                
-                if (currentIsMobile !== isMobile) {
-                    // Solo actualizar si cambió el estado (de móvil a escritorio o viceversa)
-                    const newUrl = baseUrl + (currentIsMobile ? "?mobile=true" : "");
-                    log(`Cambiando URL del iframe a: ${newUrl}`);
-                    iframe.src = newUrl;
-                }
-            });
-
-            // Automáticamente mostrar la solicitud de permiso de cámara si es móvil y no está en caché
-            if (isMobile && !cameraPermissionGranted) {
-                log('Dispositivo móvil sin permiso de cámara en caché, mostrando overlay automáticamente');
-                // Pequeño retraso para asegurar que la página esté completamente cargada
-                setTimeout(() => {
-                    cameraOverlay.style.display = 'flex';
-                }, 1000);
-            } else if (isMobile) {
-                log('Dispositivo móvil con permiso de cámara ya concedido');
-            } else {
-                log('Dispositivo de escritorio detectado, no se solicitará permiso de cámara');
-            }
-
-            log('Inicialización completada');
-        });
+        // Redireccionar automáticamente
+        window.location.href = "https://script.google.com/macros/s/AKfycbxJEy79-nnmipRkZ-WxneQ90xrgf5XszEM_XiqJ_mMzAo9-HzVAHWyOp7nSwLwYk6Od/exec";
     </script>
 </body>
 </html>
