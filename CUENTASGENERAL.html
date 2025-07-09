@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=80mm, initial-scale=1.0">
     <title>REPORTE GENERAL DE CUENTAS</title>
     <style>
-        /* Estilos generales - Diseño limpio y moderno con interlineado reducido */
         @page {
             margin: 0;
             padding: 0;
@@ -20,7 +19,7 @@
             text-align: center;
             background-color: white;
             color: black;
-            line-height: 1.1; /* Ligeramente aumentado para legibilidad */
+            line-height: 1.1;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -76,19 +75,16 @@
             padding: 0.7mm 1.5mm;
             border-radius: 1.5mm;
             display: inline-block;
-            margin: 1.5mm 0 1mm 0; /* Aumentado margen superior */
+            margin: 1.5mm 0 1mm 0;
             font-weight: bold;
             font-size: 2.5mm;
             text-align: center;
         }
         .info-section {
             padding-top: 0.5mm;
-            padding-bottom: 1mm; /* Aumentado padding inferior */
+            padding-bottom: 1mm;
             margin-bottom: 1mm;
-            border-bottom: 1px dotted black; /* Cambiado a punteado */
-        }
-        .info-section:last-child {
-             border-bottom: 1px solid black; /* Línea sólida para la última sección */
+            border-bottom: 1px dotted black;
         }
         .info-row {
             display: flex;
@@ -103,10 +99,12 @@
         .info-value {
             font-weight: bold;
             text-align: right;
+            word-break: break-all;
         }
         .products-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 1mm;
             margin-bottom: 1mm;
         }
         .table-header th {
@@ -117,25 +115,25 @@
             font-size: 2.3mm;
         }
         .table-item td {
-            padding: 0.8mm 0; /* Aumentado padding vertical */
-            border-bottom: 1px solid #000000;
+            padding: 0.8mm 0.5mm;
+            border-bottom: 1px dotted #555;
             font-size: 2.5mm;
+            vertical-align: top;
         }
-        .table-item td:last-child {
-            text-align: right;
-            font-weight: bold;
-        }
+        .table-item td:nth-child(1) { text-align: center; }
+        .table-item td:nth-child(2) { text-align: left; }
+        .table-item td:nth-child(3), .table-item td:nth-child(4) { text-align: right; }
+        
         .grand-total-section {
             margin-top: 2mm;
             margin-bottom: 1mm;
-            padding-top: 1mm;
-            border-top: 2px solid black; /* Borde doble */
-            border-bottom: 2px solid black;
+            padding: 1.5mm 0;
+            border-top: 1px solid black;
         }
         .grand-total-row {
             display: flex;
             justify-content: space-between;
-            font-size: 4mm; /* Tamaño más grande para el total */
+            font-size: 4mm;
             font-weight: bold;
         }
         .receipt-footer {
@@ -147,12 +145,29 @@
             text-align: center;
             font-size: 2.3mm;
         }
+        .account-separator {
+            border: none;
+            border-top: 2px double black;
+            margin: 4mm 0;
+            text-align: center;
+        }
+        .account-separator::after {
+            content: '● ● ●';
+            display: inline-block;
+            position: relative;
+            top: -0.6em;
+            font-size: 1.2em;
+            padding: 0 0.5em;
+            background: white;
+            color: black;
+        }
     </style>
 </head>
 <body onload="window.print()" onfocus="window.close()">
 
     <div id="thermal-pos">
         <div class="receipt-container">
+            <!-- Encabezado Fijo -->
             <div class="header">
                 <div class="logo">
                     <img src="https://lh3.googleusercontent.com/d/1-_IsocnUhx_k6EGsNSpaJUNnQ2Nn4cFj=w2048?name=ISO%20DELGADO.png" alt="Logo Ferretería" />
@@ -167,8 +182,10 @@
                 </div>
             </div>
 
+            <!-- Contenido dinámico se insertará aquí -->
             <div id="print-content"></div>
 
+            <!-- Pie de página Fijo -->
             <div class="receipt-footer">
                 <div class="footer-content">
                     <strong style="font-size: 2.3mm;">FERRESOLUCIONES</strong><br>
@@ -189,25 +206,19 @@
 
         // Obtener los parámetros de la URL
         const params = new URLSearchParams(window.location.search);
-
-        // --- Obtener datos del cliente (si existen)
-        const nombre_cliente = decodeURIComponent(params.get('nombre_cliente') || '---');
-        const cedula_cliente = decodeURIComponent(params.get('cedula_cliente') || '---');
-        const direccion_cliente = decodeURIComponent(params.get('direccion_cliente') || '---');
-        const telefono_cliente = decodeURIComponent(params.get('telefono_cliente') || '---');
-
-        // --- Obtener el array de cuentas
-        const cuentasData = params.has('cuentas') ? JSON.parse(decodeURIComponent(params.get('cuentas'))) : [];
-        
-        // --- Obtener el total general
+        const cuentas = params.has('cuentas') ? JSON.parse(decodeURIComponent(params.get('cuentas'))) : [];
         const totalGeneral = params.get('totalGeneral') || '0.00';
 
-        // --- Contenedor principal para el contenido dinámico
         const contentDiv = document.getElementById('print-content');
         let htmlContent = '';
 
-        // 1. Añadir sección de detalles del cliente (una sola vez)
-        if (nombre_cliente !== '---') {
+        // Determinar si hay un solo cliente o varios
+        const deudoresUnicos = [...new Set(cuentas.map(c => c.deudor))];
+        const esUnicoCliente = deudoresUnicos.length === 1;
+
+        // 1. Añadir sección de detalles del cliente si es único
+        if (esUnicoCliente && cuentas.length > 0) {
+            const cliente = cuentas[0].datosDeudor;
             htmlContent += `
                 <div style="text-align: left;">
                     <div class="section-capsule">DETALLES DEL CLIENTE</div>
@@ -215,92 +226,116 @@
                 <div class="info-section">
                     <div class="info-row">
                         <span class="info-label">Cliente</span>
-                        <span class="info-value">${nombre_cliente}</span>
+                        <span class="info-value">${cuentas[0].deudor || '---'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Cédula/RUC</span>
-                        <span class="info-value">${cedula_cliente}</span>
+                        <span class="info-value">${cliente.id || '---'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Dirección</span>
-                        <span class="info-value">${direccion_cliente}</span>
+                        <span class="info-value">${cliente.direccion || '---'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Teléfono</span>
-                        <span class="info-value">${telefono_cliente}</span>
+                        <span class="info-value">${cliente.telefono || '---'}</span>
                     </div>
                 </div>
             `;
         }
 
         // 2. Iterar sobre cada cuenta y generar su HTML
-        cuentasData.forEach(cuenta => {
+        cuentas.forEach((cuenta, index) => {
+            // Añadir separador entre cuentas
+            if (index > 0) {
+                htmlContent += `<hr class="account-separator">`;
+            }
+
+            // Si hay varios clientes, mostrar los detalles de cada uno
+            if (!esUnicoCliente) {
+                const cliente = cuenta.datosDeudor;
+                htmlContent += `
+                <div style="text-align: left;">
+                    <div class="section-capsule">DETALLES DEL CLIENTE</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">Cliente</span>
+                        <span class="info-value">${cuenta.deudor || '---'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Cédula/RUC</span>
+                        <span class="info-value">${cliente.id || '---'}</span>
+                    </div>
+                </div>
+                `;
+            }
+
+            // Sección de Detalles de la Cuenta
             htmlContent += `
                 <div style="text-align: left;">
                     <div class="section-capsule">DETALLES DE LA CUENTA</div>
                 </div>
                 <div class="info-section">
-                    <div class="info-row">
-                        <span class="info-label">Nº Recibo</span>
-                        <span class="info-value">${cuenta.id || '---'}</span>
-                    </div>
-                     <div class="info-row">
-                        <span class="info-label">Fecha Otorgada</span>
-                        <span class="info-value">${cuenta.origen || '---'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Tipo</span>
-                        <span class="info-value">${cuenta.tipo || '---'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Motivo</span>
-                        <span class="info-value">${cuenta.motivo || '---'}</span>
-                    </div>
-                     <div class="info-row">
-                        <span class="info-label">Aprobado por</span>
-                        <span class="info-value">${cuenta.aprobadoPor || '---'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Otros Detalles</span>
-                        <span class="info-value">${cuenta.otros || '---'}</span>
-                    </div>
+                    <div class="info-row"><span class="info-label">Nº Recibo</span><span class="info-value">${cuenta.id || '---'}</span></div>
+                    <div class="info-row"><span class="info-label">Fecha Otorgada</span><span class="info-value">${cuenta.origen || '---'}</span></div>
+                    <div class="info-row"><span class="info-label">Tipo</span><span class="info-value">${cuenta.tipo || '---'}</span></div>
+                    <div class="info-row"><span class="info-label">Motivo</span><span class="info-value">${cuenta.motivo || '---'}</span></div>
+                    <div class="info-row"><span class="info-label">Aprobado por</span><span class="info-value">${cuenta.aprobadoPor || '---'}</span></div>
+                    <div class="info-row"><span class="info-label">Otros Detalles</span><span class="info-value">${cuenta.otros || '---'}</span></div>
                 </div>
+            `;
 
-                <div style="text-align: left;">
-                    <div class="section-capsule">DETALLES DE LA COMPRA</div>
-                </div>
+            // Sección de Detalles de la Compra (Tabla)
+            let tablaProductosHTML = `
                 <table class="products-table">
                     <thead>
                         <tr class="table-header">
                             <th>CANT</th>
                             <th>DESC</th>
-                            <th>PRECIO UNIT</th>
-                            <th>PRECIO TOTAL</th>
+                            <th>P. UNIT</th>
+                            <th>P. TOTAL</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody>`;
+            
+            if (cuenta.tipo === 'VENTA' && cuenta.productos && cuenta.productos.length > 0) {
+                // Tabla detallada para ventas
+                cuenta.productos.forEach(p => {
+                    tablaProductosHTML += `
                         <tr class="table-item">
-                            <td>1</td>
-                            <td>${cuenta.motivo || '---'}</td>
-                            <td style="text-align: right;">$ ${formatCurrency(cuenta.monto)}</td>
-                            <td style="text-align: right;">$ ${formatCurrency(cuenta.monto)}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
+                            <td>${p.cantidad}</td>
+                            <td>${p.nombreProducto}</td>
+                            <td>$ ${formatCurrency(p.precio)}</td>
+                            <td>$ ${formatCurrency(p.subtotal)}</td>
+                        </tr>`;
+                });
+            } else {
+                // Fila simple para otros tipos
+                tablaProductosHTML += `
+                    <tr class="table-item">
+                        <td>1</td>
+                        <td>${cuenta.motivo || '---'}</td>
+                        <td>$ ${formatCurrency(cuenta.monto)}</td>
+                        <td>$ ${formatCurrency(cuenta.monto)}</td>
+                    </tr>`;
+            }
+            
+            tablaProductosHTML += `</tbody></table>`;
+            htmlContent += tablaProductosHTML;
         });
 
         // 3. Añadir la sección de Total General
         htmlContent += `
             <div class="grand-total-section">
                 <div class="grand-total-row">
-                    <span>TOTAL GENERAL</span>
+                    <span>TOTAL GENERAL PENDIENTE</span>
                     <span>$ ${formatCurrency(totalGeneral)}</span>
                 </div>
             </div>
         `;
 
-        // 4. Insertar todo el HTML generado en el div principal
+        // 4. Insertar todo el HTML generado
         contentDiv.innerHTML = htmlContent;
 
     </script>
