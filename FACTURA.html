@@ -182,7 +182,7 @@
         }
     </style>
 </head>
-<body onload="window.print()" onfocus="window.close()">
+<body onafterprint="window.close()">
     <div id="thermal-invoice">
         <div class="header">
             <div class="logo-container">
@@ -199,7 +199,6 @@
         </div>
 
         <div class="invoice-box">
-            <!-- Nueva línea con el nombre de la propietaria -->
             <p class="owner-name">JESSICA NATALIA NISHVE CORO</p>
             
             <div class="detail-row">
@@ -225,7 +224,6 @@
         </div>
 
         <div class="customer-details">
-            <!-- Modificado para centrar el texto -->
             <p class="customer-title">DATOS DEL CLIENTE</p>
             
             <div class="detail-row">
@@ -260,8 +258,7 @@
                 </tr>
             </thead>
             <tbody id="item-table-body">
-                <!-- Items will be inserted here dynamically -->
-            </tbody>
+                </tbody>
         </table>
 
         <div class="totals">
@@ -303,97 +300,102 @@
     </div>
 
     <script>
-        // Obtener los parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
+        window.onload = function() {
+            // Obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
 
-        // Información de la empresa
-        const companyName = params.get('company_name') || 'FERRESOLUCIONES';
-        const companyOwner = params.get('company_owner') || '';
-        const companyRuc = params.get('company_ruc') || '1727849695001';
-        const companyAddress = params.get('company_address') || 'LUIS CORDERO 132 Y JOSÉ MEJÍA';
-        const companyPhone = params.get('company_phone') || '0962248046';
-        const logoUrl = params.get('logo_url') || 'https://lh3.googleusercontent.com/d/1-_IsocnUhx_k6EGsNSpaJUNnQ2Nn4cFj=w2048?name=ISO%20DELGADO.png';
+            // Información de la empresa
+            const companyName = params.get('company_name') || 'FERRESOLUCIONES';
+            const companyOwner = params.get('company_owner') || '';
+            const companyRuc = params.get('company_ruc') || '1727849695001';
+            const companyAddress = params.get('company_address') || 'LUIS CORDERO 132 Y JOSÉ MEJÍA';
+            const companyPhone = params.get('company_phone') || '0962248046';
+            const logoUrl = params.get('logo_url') || 'https://lh3.googleusercontent.com/d/1-_IsocnUhx_k6EGsNSpaJUNnQ2Nn4cFj=w2048?name=ISO%20DELGADO.png';
 
-        // Información de la factura
-        const invoiceNumber = params.get('invoice_number') || '002-002-000000083';
-        const invoiceDate = params.get('invoice_date') || new Date().toLocaleString('es-EC');
-        const invoiceEnvironment = params.get('environment') || 'PRODUCCIÓN';
-        const invoiceEmission = params.get('emission') || 'NORMAL';
-        const authNumber = params.get('auth_number') || '0508201901160031200100120020020000000837477040611';
+            // Información de la factura
+            const invoiceNumber = params.get('invoice_number') || '002-002-000000083';
+            const invoiceDate = params.get('invoice_date') || new Date().toLocaleString('es-EC');
+            const invoiceEnvironment = params.get('environment') || 'PRODUCCIÓN';
+            const invoiceEmission = params.get('emission') || 'NORMAL';
+            const authNumber = params.get('auth_number') || '0508201901160031200100120020020000000837477040611';
 
-        // Información del cliente
-        const customerName = params.get('customer_name') || 'CONSUMIDOR FINAL';
-        const customerId = params.get('customer_id') || '9999999999999';
-        const customerAddress = params.get('customer_address') || '---';
-        const customerPhone = params.get('customer_phone') || '---';
-        const customerEmail = params.get('customer_email') || '---';
+            // Información del cliente
+            const customerName = params.get('customer_name') || 'CONSUMIDOR FINAL';
+            const customerId = params.get('customer_id') || '9999999999999';
+            const customerAddress = params.get('customer_address') || '---';
+            const customerPhone = params.get('customer_phone') || '---';
+            const customerEmail = params.get('customer_email') || '---';
 
-        // Información del vendedor
-        const attendantName = params.get('attendant') || '---';
+            // Información del vendedor
+            const attendantName = params.get('attendant') || '---';
 
-        // Datos de productos
-        const quantities = (params.get('quantities') || '0').split(',');
-        const descriptions = (params.get('descriptions') || 'No hay artículos').split(',');
-        const unitPrices = (params.get('unit_prices') || '0.00').split(',');
-        const totalPrices = (params.get('total_prices') || '0.00').split(',');
-        
-        // Totales
-        const subtotal = parseFloat(params.get('subtotal') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
-        const discount = parseFloat(params.get('discount') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
-        const total = parseFloat(params.get('total') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            // Datos de productos
+            const quantities = (params.get('quantities') || '0').split(',');
+            const descriptions = (params.get('descriptions') || 'No hay artículos').split(',');
+            const unitPrices = (params.get('unit_prices') || '0.00').split(',');
+            const totalPrices = (params.get('total_prices') || '0.00').split(',');
+            
+            // Totales
+            const subtotal = parseFloat(params.get('subtotal') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            const discount = parseFloat(params.get('discount') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            const total = parseFloat(params.get('total') || '0.00').toLocaleString('es-EC', { minimumFractionDigits: 2 });
 
-        // Establecer los valores en la plantilla
-        document.getElementById('company-logo').src = logoUrl;
-        document.getElementById('company-name').textContent = companyName;
-        document.getElementById('company-owner').textContent = companyOwner;
-        document.getElementById('company-ruc').textContent = companyRuc;
-        document.getElementById('company-address').textContent = companyAddress;
-        document.getElementById('company-phone').textContent = companyPhone;
+            // Establecer los valores en la plantilla
+            document.getElementById('company-logo').src = logoUrl;
+            document.getElementById('company-name').textContent = companyName;
+            document.getElementById('company-owner').textContent = companyOwner;
+            document.getElementById('company-ruc').textContent = companyRuc;
+            document.getElementById('company-address').textContent = companyAddress;
+            document.getElementById('company-phone').textContent = companyPhone;
 
-        document.getElementById('invoice-number').textContent = invoiceNumber;
-        document.getElementById('invoice-date').textContent = invoiceDate;
-        document.getElementById('invoice-environment').textContent = invoiceEnvironment;
-        document.getElementById('invoice-emission').textContent = invoiceEmission;
-        document.getElementById('auth-number').textContent = authNumber;
+            document.getElementById('invoice-number').textContent = invoiceNumber;
+            document.getElementById('invoice-date').textContent = invoiceDate;
+            document.getElementById('invoice-environment').textContent = invoiceEnvironment;
+            document.getElementById('invoice-emission').textContent = invoiceEmission;
+            document.getElementById('auth-number').textContent = authNumber;
 
-        document.getElementById('customer-name').textContent = customerName;
-        document.getElementById('customer-id').textContent = customerId;
-        document.getElementById('customer-address').textContent = customerAddress;
-        document.getElementById('customer-phone').textContent = customerPhone;
-        document.getElementById('customer-email').textContent = customerEmail;
+            document.getElementById('customer-name').textContent = customerName;
+            document.getElementById('customer-id').textContent = customerId;
+            document.getElementById('customer-address').textContent = customerAddress;
+            document.getElementById('customer-phone').textContent = customerPhone;
+            document.getElementById('customer-email').textContent = customerEmail;
 
-        document.getElementById('subtotal-value').textContent = '$ ' + subtotal;
-        document.getElementById('discount-value').textContent = '$ ' + discount;
-        document.getElementById('total-value-no-tax').textContent = '$ ' + subtotal;
-        document.getElementById('total-value').textContent = '$ ' + total;
+            document.getElementById('subtotal-value').textContent = '$ ' + subtotal;
+            document.getElementById('discount-value').textContent = '$ ' + discount;
+            document.getElementById('total-value-no-tax').textContent = '$ ' + subtotal; // Asumiendo que el subtotal es el valor sin IVA para RIMPE
+            document.getElementById('total-value').textContent = '$ ' + total;
 
-        document.getElementById('attendant-name').textContent = attendantName;
+            document.getElementById('attendant-name').textContent = attendantName;
 
-        // Generar la tabla de productos
-        const tableBody = document.getElementById('item-table-body');
-        
-        for (let i = 0; i < quantities.length; i++) {
-            if (descriptions[i] && descriptions[i] !== 'No hay artículos') {
-                const row = document.createElement('tr');
-                row.className = 'table-item';
-                
-                const formattedUnitPrice = parseFloat(unitPrices[i]).toLocaleString('es-EC', { minimumFractionDigits: 2 });
-                const formattedTotalPrice = parseFloat(totalPrices[i]).toLocaleString('es-EC', { minimumFractionDigits: 2 });
-                
-                row.innerHTML = `
-                    <td class="left-align">${quantities[i]}</td>
-                    <td class="left-align">${descriptions[i]}</td>
-                    <td class="right-align">$ ${formattedUnitPrice}</td>
-                    <td class="right-align">$ ${formattedTotalPrice}</td>
-                `;
-                
-                tableBody.appendChild(row);
+            // Generar la tabla de productos
+            const tableBody = document.getElementById('item-table-body');
+            
+            for (let i = 0; i < quantities.length; i++) {
+                if (descriptions[i] && descriptions[i] !== 'No hay artículos') {
+                    const row = document.createElement('tr');
+                    row.className = 'table-item';
+                    
+                    const formattedUnitPrice = parseFloat(unitPrices[i]).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+                    const formattedTotalPrice = parseFloat(totalPrices[i]).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+                    
+                    row.innerHTML = `
+                        <td class="left-align">${quantities[i]}</td>
+                        <td class="left-align">${descriptions[i]}</td>
+                        <td class="right-align">$ ${formattedUnitPrice}</td>
+                        <td class="right-align">$ ${formattedTotalPrice}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                }
             }
-        }
 
-        // Generar el código de barras
-        const barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${authNumber}&code=Code128&imagetype=Png`;
-        document.getElementById('barcode-img').src = barcodeUrl;
+            // Generar el código de barras
+            const barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${authNumber}&code=Code128&imagetype=Png`;
+            document.getElementById('barcode-img').src = barcodeUrl;
+
+            // CAMBIO 3: Llamar a la impresión como último paso, después de que todo se ha cargado.
+            window.print();
+        };
     </script>
 </body>
 </html>
