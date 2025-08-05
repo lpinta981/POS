@@ -238,62 +238,15 @@
         }
     </style>
 </head>
-<body onload=window.print() onfocus="window.close()">
-    <script>
-        // Obtener los parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
-
-        // Obtener los valores de los parámetros
-        var venta = params.has('venta') ? params.get('venta') : "---";
-        var nombre_cliente = params.has('nombre_cliente') ? params.get('nombre_cliente') : "---";
-        var cedula_cliente = params.has('cedula_cliente') ? params.get('cedula_cliente') : "---";
-        var direccion_cliente = params.has('direccion_cliente') ? params.get('direccion_cliente') : "---";
-        var telefono_cliente = params.has('telefono_cliente') ? params.get('telefono_cliente') : "---";
-        var vendedor = params.has('vendedor') ? params.get('vendedor') : "---";
-        var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
-        var total = params.has('total') ? params.get('total') : "0.00";
-        var subtotal = params.has('subtotal') ? params.get('subtotal') : "0.00";
-        var descuento = params.has('descuento') ? params.get('descuento') : "0.00";
-
-        //Recibe los datos de los servicios (separados por comas)
-        var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
-        var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
-        var p_units = params.has('p_units') ? params.get('p_units') : "0.00";
-        var p_total = params.has('p_total') ? params.get('p_total') : "0.00";
-        
-        //Formato de 2 decimales
-        total = parseFloat(total).toLocaleString('es-EC', { minimumFractionDigits: 2 });
-        subtotal = parseFloat(subtotal).toLocaleString('es-EC', { minimumFractionDigits: 2 });
-        descuento = parseFloat(descuento).toLocaleString('es-EC', { minimumFractionDigits: 2 });
-        
-        //crea una lista de cada columna a partir de las comas.
-        cantidades = cantidades.split(",");
-        descripciones = descripciones.split(","); 
-        p_units = p_units.split(",");
-        p_total = p_total.split(",");
-
-        //Crea una lista para mostrar en cada fila de la tabla
-        var result = [];
-
-        cantidades.forEach(function(value, id) {
-            result[id] = {
-                cantidad: cantidades[id],
-                descripcion: descripciones[id],
-                precio_units: parseFloat(p_units[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
-                precio_totals: parseFloat(p_total[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
-            };
-        });
-    </script>
+<body onafterprint="window.close()">
 
     <div id="thermal-pos">
-        <!-- Parte principal del recibo -->
         <div class="receipt-container">
-            <!-- Encabezado con logo e información de la tienda -->
             <div class="header">
                 <div class="logo">
                     <img src="https://lh3.googleusercontent.com/d/1-_IsocnUhx_k6EGsNSpaJUNnQ2Nn4cFj=w2048?name=ISO%20DELGADO.png" alt="Logo Ferretería" />
                 </div>
-                                    <div class="store-info">
+                <div class="store-info">
                     <div class="store-name">FERRESOLUCIONES</div>
                     <div class="store-details">
                         <span>RUC: 1727849695001</span>
@@ -303,7 +256,6 @@
                 </div>
             </div>
 
-            <!-- Sección 1: Detalles del Recibo -->
             <div style="text-align: left;">
                 <div class="section-capsule">DETALLES DEL RECIBO</div>
             </div>
@@ -322,7 +274,6 @@
                 </div>
             </div>
 
-            <!-- Sección 2: Detalles del Cliente -->
             <div style="text-align: left;">
                 <div class="section-capsule">DETALLES DEL CLIENTE</div>
             </div>
@@ -345,12 +296,10 @@
                 </div>
             </div>
 
-            <!-- Sección 3: Detalles de la Compra -->
             <div style="text-align: left;">
                 <div class="section-capsule">DETALLES DE LA COMPRA</div>
             </div>
             
-            <!-- Tabla de productos -->
             <table class="products-table">
                 <thead>
                     <tr class="table-header">
@@ -361,26 +310,9 @@
                     </tr>
                 </thead>
                 <tbody id="tablaBody">
-                    <script>
-                        var tablaBody = document.getElementById("tablaBody");
-
-                        result.forEach(function(row) {
-                            var newRow = document.createElement("tr");
-                            newRow.className = "table-item";
-
-                            newRow.innerHTML = `
-                                <td>${row.cantidad}</td>
-                                <td>${row.descripcion}</td>
-                                <td style="text-align: right;">$ ${row.precio_units}</td>
-                                <td style="text-align: right;">$ ${row.precio_totals}</td>
-                            `;
-                            tablaBody.appendChild(newRow);
-                        });
-                    </script>
-                </tbody>
+                    </tbody>
             </table>
 
-            <!-- Sección de totales -->
             <div class="totals-section">
                 <div class="total-row">
                     <span>Subtotal</span>
@@ -396,38 +328,101 @@
                 </div>
             </div>
 
-            <!-- Código de barras -->
             <div class="barcode-container">
                 <img id="barcode" alt="Código de Barras">
             </div>
         
 
-        <!-- Pie de página con diseño de ticket -->
-        <div class="receipt-footer">
-            <div class="ticket-edge"></div>
-            <div class="footer-content">
-                <strong style="font-size: 2.3mm;">FERRESOLUCIONES</strong><br>
-                <strong style="font-size: 2.3mm;">¡GRACIAS POR SU COMPRA!</strong>
+            <div class="receipt-footer">
+                <div class="ticket-edge"></div>
+                <div class="footer-content">
+                    <strong style="font-size: 2.3mm;">FERRESOLUCIONES</strong><br>
+                    <strong style="font-size: 2.3mm;">¡GRACIAS POR SU COMPRA!</strong>
+                </div>
             </div>
         </div>
     </div>
-</div>
-    <script>
-        // Insertar los datos en el HTML
-        document.getElementById("venta_id").textContent = venta;
-        document.getElementById("nombre_id").textContent = nombre_cliente;
-        document.getElementById("cedula_id").textContent = cedula_cliente;
-        document.getElementById("direccion_id").textContent = direccion_cliente;
-        document.getElementById("telefono_id").textContent = telefono_cliente;
-        document.getElementById("subtotal_id").textContent = subtotal;
-        document.getElementById("descuento_id").textContent = descuento;
-        document.getElementById("vendedor_id").textContent = vendedor;
-        document.getElementById("total_id").textContent = total;
-        document.getElementById("fechaR").textContent = fecha;
 
-        // Generar el enlace del código de barras
-        var barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${venta}&code=Code128&imagetype=Png`;
-        document.getElementById("barcode").src = barcodeUrl;
+    <script>
+        window.onload = function() {
+            // Obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+
+            // Obtener los valores de los parámetros
+            var venta = params.has('venta') ? params.get('venta') : "---";
+            var nombre_cliente = params.has('nombre_cliente') ? params.get('nombre_cliente') : "---";
+            var cedula_cliente = params.has('cedula_cliente') ? params.get('cedula_cliente') : "---";
+            var direccion_cliente = params.has('direccion_cliente') ? params.get('direccion_cliente') : "---";
+            var telefono_cliente = params.has('telefono_cliente') ? params.get('telefono_cliente') : "---";
+            var vendedor = params.has('vendedor') ? params.get('vendedor') : "---";
+            var fecha = params.has('fecha') ? params.get('fecha') : "dd/mm/aaaa hh:mm:ss";
+            var total = params.has('total') ? params.get('total') : "0.00";
+            var subtotal = params.has('subtotal') ? params.get('subtotal') : "0.00";
+            var descuento = params.has('descuento') ? params.get('descuento') : "0.00";
+
+            //Recibe los datos de los servicios (separados por comas)
+            var cantidades = params.has('cantidades') ? params.get('cantidades') : "0";
+            var descripciones = params.has('servicios') ? params.get('servicios') : "No hay articulos";
+            var p_units = params.has('p_units') ? params.get('p_units') : "0.00";
+            var p_total = params.has('p_total') ? params.get('p_total') : "0.00";
+            
+            //Formato de 2 decimales
+            total = parseFloat(total).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            subtotal = parseFloat(subtotal).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            descuento = parseFloat(descuento).toLocaleString('es-EC', { minimumFractionDigits: 2 });
+            
+            //crea una lista de cada columna a partir de las comas.
+            cantidades = cantidades.split(",");
+            descripciones = descripciones.split(","); 
+            p_units = p_units.split(",");
+            p_total = p_total.split(",");
+
+            //Crea una lista para mostrar en cada fila de la tabla
+            var result = [];
+
+            cantidades.forEach(function(value, id) {
+                result[id] = {
+                    cantidad: cantidades[id],
+                    descripcion: descripciones[id],
+                    precio_units: parseFloat(p_units[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
+                    precio_totals: parseFloat(p_total[id]).toLocaleString('es-EC', { minimumFractionDigits: 2 }),
+                };
+            });
+
+            // Poblar la tabla de productos
+            var tablaBody = document.getElementById("tablaBody");
+            result.forEach(function(row) {
+                var newRow = document.createElement("tr");
+                newRow.className = "table-item";
+
+                newRow.innerHTML = `
+                    <td>${row.cantidad}</td>
+                    <td>${row.descripcion}</td>
+                    <td style="text-align: right;">$ ${row.precio_units}</td>
+                    <td style="text-align: right;">$ ${row.precio_totals}</td>
+                `;
+                tablaBody.appendChild(newRow);
+            });
+
+            // Insertar el resto de los datos en el HTML
+            document.getElementById("venta_id").textContent = venta;
+            document.getElementById("nombre_id").textContent = nombre_cliente;
+            document.getElementById("cedula_id").textContent = cedula_cliente;
+            document.getElementById("direccion_id").textContent = direccion_cliente;
+            document.getElementById("telefono_id").textContent = telefono_cliente;
+            document.getElementById("subtotal_id").textContent = subtotal;
+            document.getElementById("descuento_id").textContent = descuento;
+            document.getElementById("vendedor_id").textContent = vendedor;
+            document.getElementById("total_id").textContent = total;
+            document.getElementById("fechaR").textContent = fecha;
+
+            // Generar el enlace del código de barras
+            var barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${venta}&code=Code128&imagetype=Png`;
+            document.getElementById("barcode").src = barcodeUrl;
+
+            // CAMBIO 3: Llamar a la impresión como último paso, después de que todo se ha cargado.
+            window.print();
+        };
     </script>
 </body>
 </html>
