@@ -393,8 +393,11 @@
             const barcodeUrl = `https://barcode.tec-it.com/barcode.ashx?data=${authNumber}&code=Code128&imagetype=Png`;
             document.getElementById('barcode-img').src = barcodeUrl;
 
-            // CAMBIO 3: Llamar a la impresión como último paso, después de que todo se ha cargado.
-            window.print();
+            // CAMBIO CLAVE: Añadir una pausa de 300ms antes de imprimir.
+            // Esto le da tiempo al navegador para cargar el logo y el código de barras.
+            setTimeout(function() {
+                window.print();
+            }, 300);
         };
     </script>
 </body>
