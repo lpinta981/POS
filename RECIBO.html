@@ -421,7 +421,11 @@
             document.getElementById("barcode").src = barcodeUrl;
 
             // CAMBIO 3: Llamar a la impresión como último paso, después de que todo se ha cargado.
-            window.print();
+            // CAMBIO 3: Llamar a la impresión como último paso, después de que todo se ha cargado.
+setTimeout(function () {
+    window.print();
+}, 700);
+
         };
     </script>
 </body>
